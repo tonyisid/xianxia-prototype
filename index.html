@@ -221,20 +221,20 @@ const MAP=['F','F','R','F','F','E','F','R','F','E','F','B']; // F=fight, E=elite
 
 // Enemy pools
 const NORMAL_ENEMIES=[
-  {name:'野狼妖',spr:'🐺',hp:[22,28],intents:[{n:'撕咬',ic:'⚔️',d:6},{n:'撕咬',ic:'⚔️',d:6},{n:'凶猛撕咬',ic:'⚔️',d:11}]},
-  {name:'青蛇妖',spr:'🐍',hp:[20,26],intents:[{n:'噬咬',ic:'⚔️',d:5},{n:'噬咬',ic:'⚔️',d:5},{n:'蜕皮',ic:'🛡️',d:0,blk:6},{n:'猛咬',ic:'⚔️',d:12}]},
-  {name:'藤妖',spr:'🌿',hp:[26,32],intents:[{n:'缠绕',ic:'🛡️',d:0,blk:8},{n:'藤鞭',ic:'⚔️',d:7},{n:'藤鞭',ic:'⚔️',d:7}]},
-  {name:'蝠群',spr:'🦇',spr2:'🦇',hp:[12,15],hp2:[12,15],intents:[{n:'啄击',ic:'⚔️',d:4},{n:'啄击',ic:'⚔️',d:4},{n:'群袭',ic:'⚔️',d:7}]},
-  {name:'毒蟾',spr:'🐸',hp:[24,30],intents:[{n:'喷毒',ic:'⚔️',d:4},{n:'舌击',ic:'⚔️',d:8},{n:'喷毒',ic:'⚔️',d:4},{n:'猛撞',ic:'⚔️',d:10}]},
+  {name:'野狼妖',spr:'🐺',hp:[22,28],intents:[{n:'撕咬',ic:'⚔️',d:9},{n:'撕咬',ic:'⚔️',d:9},{n:'凶猛撕咬',ic:'⚔️',d:15}]},
+  {name:'青蛇妖',spr:'🐍',hp:[20,26],intents:[{n:'噬咬',ic:'⚔️',d:8},{n:'噬咬',ic:'⚔️',d:8},{n:'蜕皮',ic:'🛡️',d:0,blk:6},{n:'猛咬',ic:'⚔️',d:16}]},
+  {name:'藤妖',spr:'🌿',hp:[26,32],intents:[{n:'缠绕',ic:'🛡️',d:0,blk:8},{n:'藤鞭',ic:'⚔️',d:10},{n:'藤鞭',ic:'⚔️',d:10}]},
+  {name:'蝠群',spr:'🦇',spr2:'🦇',hp:[12,15],hp2:[12,15],intents:[{n:'啄击',ic:'⚔️',d:6},{n:'啄击',ic:'⚔️',d:6},{n:'群袭',ic:'⚔️',d:10}]},
+  {name:'毒蟾',spr:'🐸',hp:[24,30],intents:[{n:'喷毒',ic:'⚔️',d:7},{n:'舌击',ic:'⚔️',d:12},{n:'喷毒',ic:'⚔️',d:7},{n:'猛撞',ic:'⚔️',d:15}]},
 ];
 
 const ELITE_ENEMIES=[
-  {name:'嗜血野猪妖',spr:'🐗',hp:[45,55],intents:[{n:'獠牙冲撞',ic:'⚔️',d:8},{n:'獠牙冲撞',ic:'⚔️',d:8},{n:'蓄力',ic:'🛡️',d:0,blk:10},{n:'狂暴冲撞',ic:'⚔️',d:14}],enrageBelow:25,enrageBonus:3},
-  {name:'幽冥蛛后',spr:'🕸️',hp:[50,60],intents:[{n:'毒液',ic:'⚔️',d:5},{n:'毒液',ic:'⚔️',d:5},{n:'猛毒',ic:'⚔️',d:10},{n:'产卵',ic:'😈',d:0}]},
+  {name:'嗜血野猪妖',spr:'🐗',hp:[45,55],intents:[{n:'獠牙冲撞',ic:'⚔️',d:12},{n:'獠牙冲撞',ic:'⚔️',d:12},{n:'蓄力',ic:'🛡️',d:0,blk:12},{n:'狂暴冲撞',ic:'⚔️',d:18}],enrageBelow:25,enrageBonus:5},
+  {name:'幽冥蛛后',spr:'🕸️',hp:[50,60],intents:[{n:'毒液',ic:'⚔️',d:8},{n:'毒液',ic:'⚔️',d:8},{n:'猛毒',ic:'⚔️',d:14},{n:'产卵',ic:'😈',d:0}]},
 ];
 
-const BOSS={name:'巨蝠妖',spr:'🦇',hp:[65,75],intents:[{n:'音波',ic:'⚔️',d:6},{n:'吸血',ic:'🧛',d:8,lsteal:.5},{n:'音波',ic:'⚔️',d:10}],
-  rageIntents:[{n:'狂乱撕咬',ic:'⚔️',d:12},{n:'狂乱撕咬',ic:'⚔️',d:12},{n:'暴怒蓄力',ic:'💪',d:0},{n:'终极俯冲',ic:'💥',d:22}],rageAt:30};
+const BOSS={name:'巨蝠妖',spr:'🦇',hp:[65,75],intents:[{n:'音波',ic:'⚔️',d:9},{n:'吸血',ic:'🧛',d:12,lsteal:.5},{n:'音波',ic:'⚔️',d:14}],
+  rageIntents:[{n:'狂乱撕咬',ic:'⚔️',d:16},{n:'狂乱撕咬',ic:'⚔️',d:16},{n:'暴怒蓄力',ic:'💪',d:0},{n:'终极俯冲',ic:'💥',d:28}],rageAt:30};
 
 // State
 let G={deck:[],hand:[],discard:[],exhaust:[],
