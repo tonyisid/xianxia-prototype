@@ -183,7 +183,11 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
     <div class="hub-btn" onclick="showRefine()"><div class="hb-icon">🔨</div><div class="hb-name">炼器</div><div class="hb-desc">炼制法器法宝</div></div>
     <div class="hub-btn" onclick="showGongfa()"><div class="hb-icon">📖</div><div class="hb-name">功法</div><div class="hb-desc">管理卡牌收藏</div></div>
   </div>
-  <button class="btn btn-sm" onclick="showInventory()" style="color:#8a8a9e;border-color:#5a5a6e">📦 背包</button>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
+    <button class="btn btn-sm" onclick="showInventory()" style="color:#8a8a9e;border-color:#5a5a6e">📦 背包</button>
+    <button class="btn btn-sm" onclick="showShentong()" style="color:#e67e22;border-color:#e67e22">⚡ 神通</button>
+    <button class="btn btn-sm" onclick="doWudao()" style="color:#9b59b6;border-color:#9b59b6">🌅 悟道</button>
+  </div>
 </div>
 
 <!-- 修炼弹窗 -->
@@ -218,6 +222,13 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
   <h2>📖 功法阁</h2>
   <div id="gongfa-tabs" style="display:flex;gap:8px;margin-bottom:15px"></div>
   <div id="gongfa-content" style="width:100%;max-width:500px"></div>
+</div>
+
+<!-- 神通弹窗 -->
+<div id="shentong-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('shentong-modal')">✕</button>
+  <h2>⚡ 神通</h2>
+  <div id="st-content" style="width:100%;max-width:500px"></div>
 </div>
 
 <!-- 背包弹窗 -->
@@ -402,6 +413,9 @@ function defaultChar(){
     unlockedGongfa:['basic'],
     gongfaCollection:[],
     equippedGongfa:[],
+    unlockedShentong:[],
+    equippedShentong:[],
+    wudaoUsed:0, // timestamp of last wudao
   };
 }
 function loadChar(){
@@ -410,6 +424,9 @@ function loadChar(){
     if(!char.unlockedGongfa) char.unlockedGongfa=['basic'];
     if(!char.gongfaCollection) char.gongfaCollection=[];
     if(!char.equippedGongfa) char.equippedGongfa=[];
+    if(!char.unlockedShentong) char.unlockedShentong=[];
+    if(!char.equippedShentong) char.equippedShentong=[];
+    if(!char.wudaoUsed) char.wudaoUsed=0;
     if(!char.yaodan) char.yaodan=0;
     return}}catch(e){}
   char=defaultChar();
@@ -426,7 +443,12 @@ let G={deck:[],hand:[],discard:[],exhaust:[],
   eIdx:0,intIdx:0,turn:0,inBattle:false,
   drugs:{},nodeIdx:0,
   fireCrowBonus:0,danYiStacks:0,baicaoPerTurn:0,playHist:{},killedElite:0,
-  runLingcao:0,runKuangshi:0,runYaodan:0};
+  runLingcao:0,runKuangshi:0,runYaodan:0,
+  stConsecEl:'',stConsecElCount:0,
+  stConsecCost:-1,stConsecCostCount:0,
+  stCardsThisTurn:0,stAtkCardsThisTurn:0,stAtkLastDmg:0,
+  stTurnsNoDmg:0,stFirstCard:true,stCostDiscount:false,
+  stUsedOnce:{},stSameNameCount:{}};
 
 // ===== 工具 =====
 function $(id){return document.getElementById(id)}
@@ -505,9 +527,30 @@ function doBreakthrough(){
   char.xiuwei-=getNextXp();
   char.realm++;
   saveChar();
+  // 突破奖励: 三选一神通
+  let pool=SHENTONG_LIST.filter(s=>!char.unlockedShentong.includes(s.id));
+  if(pool.length>0){
+    shuffle(pool);
+    let choices=pool.slice(0,Math.min(3,pool.length));
+    let html='<h3 style="color:#f1c40f;margin-bottom:15px">✨ 突破成功！选择一个神通 ✨</h3><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">';
+    choices.forEach(s=>{
+      html+=`<div style="background:#2a2a3e;border:2px solid #f1c40f;border-radius:10px;padding:15px;width:140px;cursor:pointer;text-align:center" onclick="chooseBreakST('${s.id}')">
+        <div style="color:#f1c40f;font-size:16px;margin-bottom:6px">⚡ ${s.name}</div>
+        <div style="color:#8a8a9e;font-size:12px">${s.desc}</div>
+        <div style="color:#6a6a7e;font-size:11px;margin-top:4px">[${s.cat}]</div></div>`;
+    });
+    html+='</div><button class="btn btn-sm" style="margin-top:15px;color:#8a8a9e;border-color:#5a5a6e" onclick="skipBreakST()">跳过</button>';
+    $('st-content').innerHTML=html;
+    showModal('shentong-modal');
+  }
   renderCultivate();
   renderHub();
 }
+function chooseBreakST(id){
+  if(!char.unlockedShentong.includes(id)){char.unlockedShentong.push(id);saveChar()}
+  closeModal('shentong-modal');showShentong();
+}
+function skipBreakST(){closeModal('shentong-modal')}
 
 // ===== 炼丹系统 =====
 function showAlchemy(){
@@ -573,6 +616,67 @@ function unequipPill(i){
   saveChar();renderAlchemy();
 }
 
+// ===== 神通UI =====
+function showShentong(){
+  let html='<div style="font-size:13px;color:#6a6a7e;margin-bottom:12px">已装备 ('+char.equippedShentong.length+'/3)</div>';
+  char.equippedShentong.forEach((s,i)=>{
+    html+=`<div style="background:#2a2a3e;border:2px solid #e67e22;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+      <div><span style="color:#e67e22">⚡ ${s.name}</span><div style="color:#8a8a9e;font-size:11px">${s.desc}</div></div>
+      <button class="btn btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:4px 12px;font-size:12px" onclick="unequipST(${i})">卸下</button></div>`;
+  });
+  if(!char.equippedShentong.length) html+='<div style="color:#6a6a7e;font-size:13px;margin-bottom:10px">未装备</div>';
+  html+='<h3 style="color:#d4a574;margin:12px 0 8px">已领悟 ('+char.unlockedShentong.length+'/'+SHENTONG_LIST.length+')</h3><div>';
+  let eqIds=char.equippedShentong.map(s=>s.id);
+  char.unlockedShentong.forEach(id=>{
+    let s=SHENTONG_LIST.find(x=>x.id===id);
+    if(eqIds.includes(id))return;
+    html+=`<div style="background:#2a2a3e;border:1px solid #4a4a5e;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+      <div><span style="color:#d4a574">⚡ ${s.name}</span><span style="color:#6a6a7e;font-size:11px;margin-left:8px">[${s.cat}]</span><div style="color:#8a8a9e;font-size:11px">${s.desc}</div></div>
+      <button class="btn btn-sm" style="padding:4px 12px;font-size:12px" onclick="equipST('${id}')">装备</button></div>`;
+  });
+  html+='</div>';
+  $('st-content').innerHTML=html;
+  showModal('shentong-modal');
+}
+function equipST(id){
+  if(char.equippedShentong.length>=3)return;
+  let s=SHENTONG_LIST.find(x=>x.id===id);
+  if(!s||char.equippedShentong.some(e=>e.id===id))return;
+  char.equippedShentong.push({id:s.id,name:s.name,desc:s.desc});
+  saveChar();showShentong();
+}
+function unequipST(i){char.equippedShentong.splice(i,1);saveChar();showShentong()}
+
+function doWudao(){
+  let now=Date.now();
+  if(char.xiuwei<200){alert('修为不足200，无法悟道');return}
+  if(now-char.wudaoUsed<3600000){alert('悟道冷却中，请稍后再来');return}
+  // pick 3 random shentongs not yet owned
+  let pool=SHENTONG_LIST.filter(s=>!char.unlockedShentong.includes(s.id));
+  if(!pool.length){alert('已领悟所有神通！');return}
+  shuffle(pool);
+  let choices=pool.slice(0,Math.min(3,pool.length));
+  char.xiuwei-=200;
+  char.wudaoUsed=now;
+  // show choice modal
+  let html='<h3 style="color:#d4a574;margin-bottom:15px">🌅 悟道所得，三选一</h3><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">';
+  choices.forEach(s=>{
+    html+=`<div style="background:#2a2a3e;border:2px solid #e67e22;border-radius:10px;padding:15px;width:140px;cursor:pointer;text-align:center" onclick="chooseWudao('${s.id}')">
+      <div style="color:#e67e22;font-size:16px;margin-bottom:6px">⚡ ${s.name}</div>
+      <div style="color:#8a8a9e;font-size:12px">${s.desc}</div>
+      <div style="color:#6a6a7e;font-size:11px;margin-top:4px">[${s.cat}]</div></div>`;
+  });
+  html+='</div><button class="btn btn-sm" style="margin-top:15px;color:#8a8a9e;border-color:#5a5a6e" onclick="skipWudao()">跳过</button>';
+  $('st-content').innerHTML=html;
+  showModal('shentong-modal');
+  saveChar();renderHub();
+}
+function chooseWudao(id){
+  if(!char.unlockedShentong.includes(id)){char.unlockedShentong.push(id);saveChar()}
+  closeModal('shentong-modal');showShentong();
+}
+function skipWudao(){closeModal('shentong-modal')}
+
 // ===== 功法系统 =====
 const GONGFA_LIST=[
   {id:'basic',name:'基础功法',desc:'火鸦×4, 灵草护体×3, 丹火引燃×2, 药炉感悟×1',cards:[],bonus:{},cost:null},
@@ -589,6 +693,29 @@ const GONGFA_BONUS_CARDS={
   jinrui_bonus:{name:'金光咒',type:'atk',cost:1,fx:{dmg:9},el:'metal',desc:'造成9伤害'},
   shuiyun_bonus:{name:'水波术',type:'atk',cost:1,fx:{dmg:5,draw:1},el:'water',desc:'5伤害+抽1张'},
 };
+
+// ===== 神通系统 =====
+const SHENTONG_LIST=[
+  {id:'fentian',name:'焚天',desc:'连续第3张火牌伤害翻倍',cat:'元素'},
+  {id:'kumu',name:'枯木逢春',desc:'打出木牌且HP<50%额外回复3HP',cat:'元素'},
+  {id:'houutu',name:'厚土',desc:'打出土牌后再获得2格挡',cat:'元素'},
+  {id:'jinrui',name:'金锐',desc:'金属性攻击牌15%概率伤害再翻倍',cat:'元素'},
+  {id:'shuirun',name:'水润',desc:'打出水牌后下张牌费用-1',cat:'元素'},
+  {id:'lingliGz',name:'灵力共振',desc:'连续3张同费用牌抽1张',cat:'连招'},
+  {id:'lianhuan',name:'连环诀',desc:'一回合≥4张攻击牌最后一张+50%伤害',cat:'连招'},
+  {id:'xushi',name:'蓄势',desc:'连续2回合未受伤下回合攻击+5',cat:'连招'},
+  {id:'pozhahn',name:'破绽洞察',desc:'同名牌回合内打第2张费用-1',cat:'连招'},
+  {id:'jijinshen',name:'不灭金身',desc:'HP降到30%以下获得15格挡(每场1次)',cat:'生存'},
+  {id:'niepan',name:'涅槃',desc:'死亡时1HP复活(每场1次)',cat:'生存'},
+  {id:'roukang',name:'以柔克刚',desc:'单次受伤>10时伤害-3',cat:'生存'},
+  {id:'lieyanX',name:'烈焰之心',desc:'敌人灼烧>5层火牌伤害+3',cat:'状态'},
+  {id:'baidu',name:'百毒侵',desc:'敌人中毒>5层中毒不掉层',cat:'状态'},
+  {id:'ruodian',name:'弱点洞悉',desc:'敌人有状态时攻击+2',cat:'状态'},
+  {id:'xianji',name:'先机',desc:'每场第一张牌费用为0',cat:'特殊'},
+  {id:'sheshen',name:'舍身',desc:'HP每低10%攻击伤害+5%',cat:'特殊'},
+];
+
+function hasST(id){return char.equippedShentong.some(s=>s.id===id)}
 
 let gongfaTab='deck';
 function showGongfa(){
@@ -815,6 +942,9 @@ function showInventory(){
   html+='</div><h3>功法</h3><div style="margin-bottom:15px">';
   if(char.equippedGongfa.length) char.equippedGongfa.forEach(g=>{html+=`<div style="color:#e67e22;font-size:14px;margin:4px 0">📖 ${g.name}</div>`});
   else html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
+  html+='</div><h3>神通</h3><div style="margin-bottom:15px">';
+  if(char.equippedShentong.length) char.equippedShentong.forEach(s=>{html+=`<div style="color:#e67e22;font-size:14px;margin:4px 0">⚡ ${s.name} <span style="color:#6a6a7e;font-size:11px">${s.desc}</span></div>`});
+  else html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
   html+='</div><h3>灵根加成</h3><div style="color:#8a8a9e;font-size:13px">';
   let lg=char.linggen;
   if(lg==='fire') html+='🔥 攻击牌+1伤害，多1张火鸦';
@@ -906,6 +1036,9 @@ function startFight(isElite){
   hp=Math.round(hp*scale);
   initEnemy(template,hp);
   G.inBattle=true;G.intIdx=0;G.turn=0;G.drugUsed=false;G.nextAtk=0;G.playHist={};
+  G.stConsecEl='';G.stConsecElCount=0;G.stConsecCost=-1;G.stConsecCostCount=0;
+  G.stCardsThisTurn=0;G.stAtkCardsThisTurn=0;G.stFirstCard=true;G.stCostDiscount=false;
+  G.stUsedOnce={};G.stSameNameCount={};G.stTurnsNoDmg=0;
   $('log-area').innerHTML='';
   log(`—— ${G.ename} 出现了！ (${hp}HP) ——`,'log-info');
   renderProgress();
@@ -918,6 +1051,9 @@ function startBoss(){
   let hp=rand(BOSS.hp[0],BOSS.hp[1]);
   initEnemy(BOSS,hp);
   G.inBattle=true;G.intIdx=0;G.turn=0;G.drugUsed=false;G.nextAtk=0;G.playHist={};
+  G.stConsecEl='';G.stConsecElCount=0;G.stConsecCost=-1;G.stConsecCostCount=0;
+  G.stCardsThisTurn=0;G.stAtkCardsThisTurn=0;G.stFirstCard=true;G.stCostDiscount=false;
+  G.stUsedOnce={};G.stSameNameCount={};G.stTurnsNoDmg=0;
   $('log-area').innerHTML='';
   log(`—— 👑 Boss：${G.ename} 出现了！(${hp}HP) ——`,'log-combo');
   renderProgress();
@@ -941,6 +1077,9 @@ function shuffleIntoDeck(){
 
 function startTurn(){
   G.turn++;G.sp=G.maxSp;G.blk=0;G.firePlayed=0;G.drugUsed=false;G.playHist={};
+  G.stCardsThisTurn=0;G.stAtkCardsThisTurn=0;G.stFirstCard=true;G.stCostDiscount=false;G.stSameNameCount={};
+  // 蓄势: 连续未受伤
+  if(G.stTurnsNoDmg>=2&&hasST('xushi')){G.nextAtk+=5;log('⚡蓄势！攻击+5','log-combo')}
   if(G.baicaoPerTurn>0) G.blk+=G.baicaoPerTurn;
   // 土灵根加成
   if(char.linggen==='earth') G.blk+=3;
@@ -1041,9 +1180,29 @@ function _playCard(idx,target){
   if(!G.inBattle)return;
   let c=G.hand[idx];
   if(G.sp<c.cost)return;
-  G.sp-=c.cost;
+  // 神通: 先机(第一张牌免费)
+  if(G.stFirstCard&&hasST('xianji')){log('⚡先机！费用为0','log-combo')}
+  else{G.sp-=c.cost}
+  // 神通: 破绽洞察(同名第2张费用-1)
+  G.stSameNameCount[c.name]=(G.stSameNameCount[c.name]||0)+1;
+  if(G.stSameNameCount[c.name]===2&&hasST('pozhahn')){G.sp=Math.min(G.maxSp,G.sp+1);log('⚡破绽洞察！+1灵力','log-combo')}
+  // 神通: 水润折扣
+  if(G.stCostDiscount){G.sp=Math.min(G.maxSp,G.sp+1);G.stCostDiscount=false;log('⚡水润！+1灵力','log-combo')}
   G.hand.splice(idx,1);
   if(c.el==='fire') G.firePlayed++;
+  // 神通: 元素连击追踪
+  if(c.el===G.stConsecEl){G.stConsecElCount++}else{G.stConsecEl=c.el;G.stConsecElCount=1}
+  // 神通: 同费用追踪
+  if(c.cost===G.stConsecCost){G.stConsecCostCount++}else{G.stConsecCost=c.cost;G.stConsecCostCount=1}
+  G.stCardsThisTurn++;G.stFirstCard=false;
+  // 神通: 水润标记
+  if(c.el==='water'&&hasST('shuirun')){G.stCostDiscount=true}
+  // 神通: 厚土
+  if(c.el==='earth'&&hasST('houutu')){G.blk+=2;log('⚡厚土！+2格挡','log-block')}
+  // 神通: 枯木逢春
+  if(c.el==='wood'&&hasST('kumu')&&G.hp<G.maxHp*0.5){G.hp=Math.min(G.maxHp,G.hp+3);log('⚡枯木逢春！+3HP','log-heal')}
+  // 神通: 灵力共振
+  if(G.stConsecCostCount>=3&&hasST('lingliGz')){G.stConsecCostCount=0;drawCard();log('⚡灵力共振！抽1张','log-combo')}
   G.playHist[c.name]=(G.playHist[c.name]||0)+1;
   if(G.playHist[c.name]>=2){showCombo(G.playHist[c.name])}
 
@@ -1067,6 +1226,20 @@ function _playCard(idx,target){
       char.equippedPills.forEach(p=>{if(p.burn&&c.burn>0) totalDmg+=0}); // burn bonus applied below
       G.nextAtk=0;
     }
+    // ===== 神通: 伤害修正 =====
+    // 舍身: HP每低10%攻击+5%
+    if(hasST('sheshen')&&c.type==='atk'){let pct=1-Math.max(0,G.hp)/G.maxHp;totalDmg=Math.ceil(totalDmg*(1+pct*0.5))}
+    // 烈焰之心: 敌人灼烧>5火牌+3
+    if(hasST('lieyanX')&&c.el==='fire'&&G.eburn>5){totalDmg+=3;log('⚡烈焰之心！+3伤害','log-combo')}
+    // 弱点洞悉: 敌人有状态+2
+    if(hasST('ruodian')&&(G.eburn>0||G.epoison>0||G.eblk>0)&&c.type==='atk'){totalDmg+=2}
+    // 焚天: 连续第3张火翻倍
+    if(hasST('fentian')&&c.el==='fire'&&G.stConsecElCount>=3&&G.stConsecEl==='fire'){totalDmg*=2;log('⚡焚天！伤害翻倍！','log-combo')}
+    // 金锐: 金牌15%再翻
+    if(hasST('jinrui')&&c.el==='metal'&&c.type==='atk'&&Math.random()<0.15){totalDmg*=2;log('⚡金锐！翻倍！','log-combo')}
+    // 连环诀: >=4张攻击最后一张+50%
+    if(c.type==='atk') G.stAtkCardsThisTurn++;
+    if(hasST('lianhuan')&&c.type==='atk'&&G.stAtkCardsThisTurn>=4){totalDmg=Math.ceil(totalDmg*1.5);log('⚡连环诀！+50%伤害','log-combo')}
     // 灵犀戒暴击
     if(char.equippedArtifacts.some(a=>a.crit)&&Math.random()*100<(char.equippedArtifacts.find(a=>a.crit).crit||0)){totalDmg*=2;log('💥 法器暴击！','log-combo')}
     // 金灵根暴击
@@ -1129,7 +1302,10 @@ function showCombo(n){
 function endPlayerTurn(){
   if(!G.inBattle)return;
   G.discard.push(...G.hand);G.hand=[];G.playHist={};
+  // 百毒侵: 中毒>5不掉层
+  let poisonNoDecay=hasST('baidu')&&G.epoison>5;
   if(G.eburn>0){G.ehp-=G.eburn;log(`🔥灼烧 ${G.eburn}伤害`,'log-burn');G.eburn=Math.max(0,G.eburn-1)}
+  if(G.epoison>0){G.ehp-=G.epoison;log(`☠️中毒 ${G.epoison}伤害`,'log-burn');if(!poisonNoDecay)G.epoison=Math.max(0,G.epoison-1);else log('⚡百毒侵！中毒不掉层','log-combo')}
   let t=G.etemplate;
   let intents=t.rageIntents&&G.ehp<t.rageAt?t.rageIntents:t.intents;
   let intent=intents[G.intIdx%intents.length];
@@ -1139,7 +1315,10 @@ function endPlayerTurn(){
     if(t.enrageBelow&&G.ehp<t.enrageBelow) dmg+=t.enrageBonus;
     // 金丝甲减伤
     char.equippedArtifacts.forEach(a=>{if(a.dmgReduce) dmg=Math.max(0,dmg-a.dmgReduce)});
-    let blocked=Math.min(G.blk,dmg);let actual=dmg-blocked;G.blk-=blocked;G.hp-=actual;
+    let blocked=Math.min(G.blk,dmg);let actual=dmg-blocked;G.blk-=blocked;
+    // 以柔克刚
+    if(hasST('roukang')&&actual>10){actual-=3;log('⚡以柔克刚！伤害-3','log-block')}
+    G.hp-=actual;
     log(`${G.ename}【${intent.n}】→ ${dmg}伤害${blocked>0?'(挡'+blocked+')':''}`,'log-damage');
     if(intent.lsteal){let s=Math.floor(actual*intent.lsteal);G.ehp=Math.min(G.eMaxHp,G.ehp+s);if(s>0)log(`🧛回复${s}生命`,'log-heal')}
     if(G.ehp2>0){let d2=rand(3,5);char.equippedArtifacts.forEach(a=>{if(a.dmgReduce) d2=Math.max(0,d2-a.dmgReduce)});let b2=Math.min(G.blk,d2);G.hp-=(d2-b2);G.blk-=b2;log(`小蝠攻击→${d2}伤害${b2>0?'(挡'+b2+')':''}`,'log-damage')}
@@ -1147,8 +1326,14 @@ function endPlayerTurn(){
   if(intent.blk>0){G.eblk+=intent.blk;log(`${G.ename}获得${intent.blk}格挡`,'log-block')}
   if(G.epoison>0){G.ehp-=G.epoison;log(`☠️中毒 ${G.epoison}伤害`,'log-burn');G.epoison=Math.max(0,G.epoison-1)}
   G.intIdx++;
+  // 不灭金身
+  if(hasST('jijinshen')&&!G.stUsedOnce['jijinshen']&&G.hp>0&&G.hp<G.maxHp*0.3){G.blk+=15;G.stUsedOnce['jijinshen']=true;log('⚡不灭金身！+15格挡','log-block')}
+  // 蓄势追踪
+  if(actual<=0||!intent.d){G.stTurnsNoDmg++}else{G.stTurnsNoDmg=0}
   // 木灵珠战斗后回血不在回合结束，在战斗结束
   if(G.ehp<=0&&G.ehp2<=0){enemyDefeated();return}
+  // 涅槃
+  if(G.hp<=0&&hasST('niepan')&&!G.stUsedOnce['niepan']){G.hp=1;G.stUsedOnce['niepan']=true;log('⚡涅槃！1HP复活！','log-combo')}
   if(G.hp<=0){playerDefeated();return}
   startTurn();
 }
