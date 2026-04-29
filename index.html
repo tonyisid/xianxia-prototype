@@ -159,8 +159,19 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
 </head>
 <body>
 
+<!-- 灵根觉醒 -->
+<div id="linggen-screen" class="hidden">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:linear-gradient(180deg,#0d0d1a,#1a1a2e 50%,#2d1f3d)">
+    <h2 style="color:#d4a574;font-size:28px;margin-bottom:30px;letter-spacing:4px">🌟 灵根觉醒 🌟</h2>
+    <div id="linggen-reveal" style="font-size:80px;margin-bottom:20px"></div>
+    <div id="linggen-name" style="font-size:24px;margin-bottom:10px"></div>
+    <div id="linggen-desc" style="color:#8a8a9e;font-size:14px;margin-bottom:30px;max-width:300px;text-align:center"></div>
+    <button class="btn" onclick="confirmLinggen()">踏入修仙之路</button>
+  </div>
+</div>
+
 <!-- 主界面/洞府 -->
-<div id="hub-screen">
+<div id="hub-screen" class="hidden">
   <div class="hub-title">凡人修仙</div>
   <div class="hub-subtitle">卡牌肉鸽 · v0.3</div>
   <div class="hub-info" id="hub-char-info"></div>
@@ -705,7 +716,7 @@ function showIntent(){
   if(char.equippedArtifacts.some(a=>a.seeNext)){
     let nextIdx=(G.intIdx+1)%intents.length;
     let ni=intents[nextIdx];
-    html+=` <span style="color:#9b59b6;font-size:12px">(下回合:${ni.n}${ni.d?' '+ni.d:'')}${ni.blk?' +🛡️'+ni.blk:''})</span>`;
+    html+=` <span style="color:#9b59b6;font-size:12px">(下回合:${ni.n}${ni.d?' '+ni.d:''}${ni.blk?' +🛡️'+ni.blk:''})</span>`;
   }
   $('enemy-intent').innerHTML=html;
 }
@@ -1032,10 +1043,43 @@ window.restRemove=function(){
 };
 window.skipRemove=function(){G.nodeIdx++;nextNode()};
 
+// ===== 灵根觉醒界面 =====
+const LG_DESC={
+  fire:'火灵根：攻击牌+1伤害，初始多1张火鸦',
+  wood:'木灵根：治疗效果+2，初始多1张灵草护体',
+  earth:'土灵根：开局+3格挡，格挡牌+2',
+  water:'水灵根：初始灵力4，首回合多抽1张',
+  metal:'金灵根：10%暴击率，初始多1张金刃符'
+};
+
+function initGame(){
+  loadChar();
+  // 检查是否新玩家（无存档）
+  if(!localStorage.getItem('xianxia_save')){
+    showLinggenReveal();
+  } else {
+    renderHub();
+    show('hub-screen');
+  }
+}
+
+function showLinggenReveal(){
+  let lg=char.linggen;
+  $('linggen-reveal').textContent=EL_EMOJI[lg];
+  $('linggen-name').innerHTML=`<span class="linggen-badge ${LG_CSS[lg]}">${LG_CN[lg]}</span>`;
+  $('linggen-desc').textContent=LG_DESC[lg];
+  ['hub-screen','drug-screen','battle-screen','card-select-screen','rest-screen','end-screen'].forEach(s=>$(s).classList.add('hidden'));
+  $('linggen-screen').classList.remove('hidden');
+}
+
+function confirmLinggen(){
+  saveChar();
+  renderHub();
+  show('hub-screen');
+}
+
 // ===== 初始化 =====
-loadChar();
-renderHub();
-show('hub-screen');
+initGame();
 </script>
 </body>
 </html>
