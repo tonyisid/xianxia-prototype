@@ -299,11 +299,16 @@ const PILL_RECIPES=[
 ];
 // 器方
 const ARTIFACT_RECIPES=[
-  {id:'sword',name:'玄铁剑',desc:'攻击牌+3伤害',cost:2,effect:{atkDmg:3}},
-  {id:'bead',name:'木灵珠',desc:'每场战斗后回复3HP',cost:2,effect:{healAfter:3}},
-  {id:'jade',name:'聚灵佩',desc:'首回合多抽1张',cost:3,effect:{draw1:1}},
-  {id:'armor',name:'金丝甲',desc:'受到伤害-2',cost:3,effect:{dmgReduce:2}},
-  {id:'ring',name:'灵犀戒',desc:'显示敌人下回合意图',cost:4,effect:{seeNext:1}},
+  {id:'sword1',name:'铁剑',desc:'攻击牌+2伤害',cost:{kuangshi:2},effect:{atkDmg:2},tier:1},
+  {id:'sword2',name:'玄铁剑',desc:'攻击牌+5伤害',cost:{kuangshi:3,yaodan:1,upgrade:'sword1'},effect:{atkDmg:5},tier:2},
+  {id:'bead1',name:'灵木珠',desc:'每场战斗后回复2HP',cost:{lingcao:2,kuangshi:1},effect:{healAfter:2},tier:1},
+  {id:'bead2',name:'木灵珠',desc:'每场战斗后回复5HP',cost:{lingcao:3,yaodan:1,upgrade:'bead1'},effect:{healAfter:5},tier:2},
+  {id:'jade1',name:'聚灵符',desc:'首回合多抽1张',cost:{lingcao:2,kuangshi:1},effect:{draw1:1},tier:1},
+  {id:'jade2',name:'聚灵佩',desc:'首回合多抽2张',cost:{lingcao:3,yaodan:2,upgrade:'jade1'},effect:{draw1:2},tier:2},
+  {id:'armor1',name:'铁甲片',desc:'受到伤害-1',cost:{kuangshi:3},effect:{dmgReduce:1},tier:1},
+  {id:'armor2',name:'金丝甲',desc:'受到伤害-3',cost:{kuangshi:4,yaodan:2,upgrade:'armor1'},effect:{dmgReduce:3},tier:2},
+  {id:'ring1',name:'灵符',desc:'显示敌人下回合意图',cost:{lingcao:3,kuangshi:2},effect:{seeNext:1},tier:1},
+  {id:'ring2',name:'灵犀戒',desc:'显示下回合意图+暴击5%',cost:{yaodan:3,kuangshi:3,upgrade:'ring1'},effect:{seeNext:1,crit:5},tier:2},
 ];
 
 // ===== 卡牌系统 =====
@@ -559,18 +564,36 @@ function renderRefine(){
   $('refine-ores').textContent=char.kuangshi;
   let html='';
   ARTIFACT_RECIPES.forEach(r=>{
-    let can=char.kuangshi>=r.cost;
-    html+=`<div class="recipe-card${can?'':' disabled'}" onclick="${can?`craftArtifact('${r.id}')`:''}">
-      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">⛏️×${r.cost}</div></div>`;
+    let c=r.cost;
+    let hasUpgrade=!r.upgrade||char.ownedArtifacts.some(a=>a._id===r.upgrade)||char.equippedArtifacts.some(a=>a._id===r.upgrade);
+    let can=(c.lingcao||0)<=char.lingcao&&(c.kuangshi||0)<=char.kuangshi&&(c.yaodan||0)<=char.yaodan&&hasUpgrade;
+    let costParts=[];
+    if(c.lingcao) costParts.push(`🌿×${c.lingcao}`);
+    if(c.kuangshi) costParts.push(`⛏️×${c.kuangshi}`);
+    if(c.yaodan) costParts.push(`🔮×${c.yaodan}`);
+    let upNote=r.upgrade?`<div style="color:#e67e22;font-size:11px;margin-top:4px">需要：${ARTIFACT_RECIPES.find(x=>x.id===r.upgrade).name}</div>`:'';
+    let tierColor=r.tier===2?'border:2px solid #e67e22':'border:2px solid #4a4a5e';
+    html+=`<div class="recipe-card${can?'':' disabled'}" style="${tierColor}" onclick="${can?`craftArtifact('${r.id}')`:''}">
+      <div class="rc-name">${r.tier===2?'⭐ ':''}${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">${costParts.join(' ')}</div>${upNote}</div>`;
   });
   $('refine-recipes').innerHTML=html;
   renderArtifactSlots();
 }
 function craftArtifact(id){
   let r=ARTIFACT_RECIPES.find(a=>a.id===id);
-  if(!r||char.kuangshi<r.cost)return;
-  char.kuangshi-=r.cost;
-  char.ownedArtifacts.push({...r.effect,_name:r.name,_id:r.id});
+  if(!r)return;
+  let c=r.cost;
+  if((c.lingcao||0)>char.lingcao||(c.kuangshi||0)>char.kuangshi||(c.yaodan||0)>char.yaodan)return;
+  // 消耗升级材料(低阶法宝)
+  if(r.upgrade){
+    let idx=char.ownedArtifacts.findIndex(a=>a._id===r.upgrade);
+    if(idx>=0){char.ownedArtifacts.splice(idx,1)}
+    else{idx=char.equippedArtifacts.findIndex(a=>a._id===r.upgrade);if(idx>=0)char.equippedArtifacts.splice(idx,1)}
+  }
+  if(c.lingcao) char.lingcao-=c.lingcao;
+  if(c.kuangshi) char.kuangshi-=c.kuangshi;
+  if(c.yaodan) char.yaodan-=c.yaodan;
+  char.ownedArtifacts.push({...r.effect,_name:r.name,_id:r.id,_tier:r.tier});
   saveChar();renderRefine();renderHub();
 }
 function renderArtifactSlots(){
@@ -736,7 +759,7 @@ function startTurn(){
   // 水灵根首回合多抽
   if(G.turn===1&&char.linggen==='water') drawCount++;
   // 聚灵佩首回合多抽
-  if(G.turn===1&&char.equippedArtifacts.some(a=>a.draw1)) drawCount++;
+  if(G.turn===1){char.equippedArtifacts.forEach(a=>{if(a.draw1) drawCount+=a.draw1})}
   for(let i=0;i<drawCount;i++) drawCard();
   showIntent();
   log(`—— 第${G.turn}回合 ——`,'log-info');
@@ -852,6 +875,8 @@ function _playCard(idx,target){
       char.equippedPills.forEach(p=>{if(p.burn&&c.burn>0) totalDmg+=0}); // burn bonus applied below
       G.nextAtk=0;
     }
+    // 灵犀戒暴击
+    if(char.equippedArtifacts.some(a=>a.crit)&&Math.random()*100<(char.equippedArtifacts.find(a=>a.crit).crit||0)){totalDmg*=2;log('💥 法器暴击！','log-combo')}
     // 金灵根暴击
     if(char.linggen==='metal'&&Math.random()<0.1){totalDmg*=2;log('💥 暴击！','log-combo')}
     let tBlk=target===2?G.eblk2:G.eblk;
