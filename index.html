@@ -182,7 +182,7 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
     <div class="hub-btn" onclick="showCultivate()"><div class="hb-icon">🧘</div><div class="hb-name">修炼</div><div class="hb-desc">打坐积攒修为</div></div>
     <div class="hub-btn" onclick="showAlchemy()"><div class="hb-icon">⚗️</div><div class="hb-name">炼丹</div><div class="hb-desc">炼制灵丹妙药</div></div>
     <div class="hub-btn" onclick="showRefine()"><div class="hb-icon">🔨</div><div class="hb-name">炼器</div><div class="hb-desc">炼制法器法宝</div></div>
-    <div class="hub-btn" onclick="showGongfa()"><div class="hb-icon">📖</div><div class="hb-name">功法</div><div class="hb-desc">管理卡牌收藏</div></div>
+    <div class="hub-btn" onclick="showGongfa()"><div class="hb-icon">📖</div><div class="hb-name">道统</div><div class="hb-desc">选择修炼流派</div></div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
     <button class="btn btn-sm" onclick="showInventory()" style="color:#8a8a9e;border-color:#5a5a6e">📦 背包</button>
@@ -324,19 +324,6 @@ const LG_CSS={fire:'lg-fire',wood:'lg-wood',earth:'lg-earth',water:'lg-water',me
 const REALM_NAMES=['炼气1层','炼气2层','炼气3层','炼气4层','炼气5层','炼气6层','炼气7层','炼气8层','炼气9层','筑基初期','筑基中期','筑基后期','金丹初期','金丹中期','金丹后期'];
 const REALM_XP=[0,100,200,350,500,700,1000,1400,1900,2500,3200,4000,5000,6200,7500];
 
-// 仙人日志
-const XIANREN_LOGS=[
-  '炼气三年，师父说我天资愚钝。我笑了。天资不够，就用命来凑。',
-  '今日入幽冥谷。瘴气中似有人影，走近却空无一人。',
-  '遇到一位散修，她说她叫苏瑶。这是我第一次和人结伴而行。',
-  '苏瑶的剑法凌厉，与她的笑容判若两人。她没说为什么来幽冥谷。',
-  '谷深处发现一面石碑，上面的字已被风蚀。我只认出"轮回"二字。',
-  '巨蝠妖的面孔在某一瞬变得清晰——那张脸，和我一模一样。',
-  '苏瑶离开了。她说有更重要的事。我没问是什么。',
-  '师父的声音越来越弱。他说有些事，要我自己去记起来。',
-  '玉佩发热了。上面的纹路像是某种阵法，但我看不懂。',
-  '我终于想起了自己的名字。但这不重要。重要的是接下来要做什么。',
-];
 
 // ===== 五行相生 =====
 const SHENG_MAP={
@@ -913,33 +900,32 @@ const SHENTONG_LIST=[
 
 function hasST(id){return char.equippedShentong.some(s=>s.id===id)}
 
-// ===== 仙人日志 =====
+// 仙人日志 (10条)
 const XIANREN_LOGS=[
-  {id:1,text:'「炼气三年，师父说我天资愚钝。我笑了。天资不够，就用命来凑。」'},
-  {id:2,text:'「今日入幽冥谷。瘴气中似有人影，走近却空无一人。」'},
-  {id:3,text:'「遇到一位散修，她说她叫苏瑶。这是我第一次和人结伴而行。」'},
-  {id:4,text:'「苏瑶的剑法凌厉，与她的笑容判若两人。她没说为什么来幽冥谷。」'},
-  {id:5,text:'「谷深处发现一面石碑，上面的字已被风蚀。我只认出'轮回'二字。」'},
-  {id:6,text:'「巨蝠妖的面孔在某一瞬变得清晰——那张脸，和我一模一样。」'},
-  {id:7,text:'「苏瑶离开了。她说有更重要的事。我没问是什么。」'},
-  {id:8,text:'「师父的声音越来越弱。他说有些事，要我自己去记起来。」'},
-  {id:9,text:'「玉佩发热了。上面的纹路像是某种阵法，但我看不懂。」'},
-  {id:10,text:'「我终于想起了自己的名字。但这不重要。重要的是接下来要做什么。」'},
+  '炼气三年，师父说我天资愚钝。我笑了。天资不够，就用命来凑。',
+  '今日入幽冥谷。瘴气中似有人影，走近却空无一人。',
+  '遇到一位散修，她说她叫苏瑶。这是我第一次和人结伴而行。',
+  '苏瑶的剑法凌厉，与她的笑容判若两人。她没说为什么来幽冥谷。',
+  '谷深处发现一面石碑，上面的字已被风蚀。我只认出"轮回"二字。',
+  '巨蝠妖的面孔在某一瞬变得清晰——那张脸，和我一模一样。',
+  '苏瑶离开了。她说有更重要的事。我没问是什么。',
+  '师父的声音越来越弱。他说有些事，要我自己去记起来。',
+  '玉佩发热了。上面的纹路像是某种阵法，但我看不懂。',
+  '我终于想起了自己的名字。但这不重要。重要的是接下来要做什么。',
 ];
 
-function tryDropLog(){
+function tryDropLog(isElite){
   if(G.logDropChecked) return;
   G.logDropChecked=true;
-  let chance=0;
-  if(MAP[G.nodeIdx]==='E') chance=0.15;
-  else chance=0.30;
+  let chance=isElite?0.15:0.30;
   if(Math.random()<chance){
-    let uncollected=XIANREN_LOGS.filter(l=>!char.collectedLogs.includes(l.id));
+    let uncollected=[];
+    for(let i=0;i<XIANREN_LOGS.length;i++){if(!char.collectedLogs.includes(i)) uncollected.push(i);}
     if(uncollected.length>0){
-      let log=uncollected[rand(0,uncollected.length-1)];
-      char.collectedLogs.push(log.id);
+      let logIdx=uncollected[rand(0,uncollected.length-1)];
+      char.collectedLogs.push(logIdx);
       saveChar();
-      log(`📜 发现仙人日志 #${log.id}！`,'log-combo');
+      log(`📜 发现仙人日志 #${logIdx+1}！`,'log-combo');
       if(char.collectedLogs.length>=10){
         log(`📜 收集全部仙人日志！解锁困难模式！`,'log-combo');
       }
@@ -1189,12 +1175,12 @@ function showInventory(){
 }
 
 function showLogs(){
-  let html='<h2 style="color:#d4a574;margin-bottom:15px">📜 仙人日志 ('+char.collectedLogs.length+'/10)</h2>';
-  XIANREN_LOGS.forEach(l=>{
-    let collected=char.collectedLogs.includes(l.id);
-    html+=`<div style="background:#2a2a3e;border:1px solid ${collected?'#d4a574':'#3a3a4e'};border-radius:8px;padding:12px;margin-bottom:8px;font-size:13px;color:${collected?'#e0d5c1':'#4a4a5e'}">[${collected?'#'+l.id:'???'}] ${collected?l.text:'未收集'}</div>`;
+  let html='<h2 style="color:#d4a574;margin-bottom:15px">📜 仙人日志 ('+char.collectedLogs.length+'/'+XIANREN_LOGS.length+')</h2>';
+  XIANREN_LOGS.forEach((l,i)=>{
+    let collected=char.collectedLogs.includes(i);
+    html+=`<div style="background:#2a2a3e;border:1px solid ${collected?'#d4a574':'#3a3a4e'};border-radius:8px;padding:12px;margin-bottom:8px;font-size:13px;color:${collected?'#e0d5c1':'#4a4a5e'}">[${collected?'#'+(i+1):'???'}] ${collected?l:'未收集'}</div>`;
   });
-  if(char.collectedLogs.length>=10) html+='<div style="color:#f1c40f;margin-top:10px">✅ 全部收集完毕！困难模式已解锁！</div>';
+  if(char.collectedLogs.length>=XIANREN_LOGS.length) html+='<div style="color:#f1c40f;margin-top:10px">✅ 全部收集完毕！困难模式已解锁！</div>';
   html+='<button class="btn btn-sm" style="margin-top:15px" onclick="closeModal(\'inventory-modal\')">关闭</button>';
   $('inv-content').innerHTML=html;
   showModal('inventory-modal');
@@ -1549,7 +1535,7 @@ function _playCard(idx,target){
   // ===== 蓄力型卡牌：加入pendingBuffs =====
   if(c.chargeType){
     G.pendingBuffs.push({type:c.chargeType,effect:c.chargeEffect,charges:c.chargeCharges});
-    log(`⚡蓄力【${c.name}】！下${c.chargeCharges}张${c.chargeType==='atk'?'攻击':c.chargeType==='def'?'防御':'任意'}牌${Object.entries(c.chargeEffect).map(([k,v])=>k==='dmg'?'伤害+'+v:k==='blk'?'格挡+'+v:k==='poison'?'中毒+'+v:k==='cost'?'费用'+v:'').join(',')}','log-info');
+    log(`⚡蓄力【${c.name}】！下${c.chargeCharges}张${c.chargeType==='atk'?'攻击':c.chargeType==='def'?'防御':'任意'}牌获得加成`,'log-info');
   }
 
   if(c.el==='fire') G.firePlayed++;
