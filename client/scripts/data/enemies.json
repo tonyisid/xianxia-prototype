@@ -1,0 +1,134 @@
+{
+  "description": "凡人修仙卡牌肉鸽 — 8种敌人配置",
+  "enemies": [
+    {
+      "id": "wolf",
+      "name": "野狼妖",
+      "emoji": "🐺",
+      "hp_base": {"min": 26, "max": 34},
+      "intents": [
+        {"type": "atk", "value": 11, "weight": 60},
+        {"type": "atk", "value": 18, "weight": 25},
+        {"type": "charge", "weight": 15}
+      ],
+      "enrage_below": null,
+      "special": null
+    },
+    {
+      "id": "snake",
+      "name": "青蛇妖",
+      "emoji": "🐍",
+      "hp_base": {"min": 24, "max": 32},
+      "intents": [
+        {"type": "atk", "value": 10, "weight": 40},
+        {"type": "atk_blk", "value": 19, "blk": 8, "weight": 30},
+        {"type": "def", "blk": 12, "weight": 30}
+      ],
+      "enrage_below": null,
+      "special": "sloughing",
+      "special_desc": "HP<40%时，防御意图+5格挡"
+    },
+    {
+      "id": "vine",
+      "name": "藤妖",
+      "emoji": "🌿",
+      "hp_base": {"min": 30, "max": 38},
+      "intents": [
+        {"type": "atk", "value": 12, "weight": 40},
+        {"type": "def", "blk": 10, "weight": 40},
+        {"type": "def_atk", "blk": 10, "atk": 12, "weight": 20}
+      ],
+      "enrage_below": null,
+      "special": "entangle",
+      "special_desc": "玩家下回合-1灵力"
+    },
+    {
+      "id": "bat",
+      "name": "蝠群",
+      "emoji": "🦇",
+      "hp_base": {"min": 14, "max": 18},
+      "multi_target": 2,
+      "intents": [
+        {"type": "multi_atk", "value": 7, "weight": 50},
+        {"type": "multi_atk", "value": 12, "weight": 30},
+        {"type": "def", "blk": 6, "weight": 20}
+      ],
+      "enrage_below": null,
+      "special": "dual",
+      "special_desc": "双实体，各自有独立HP"
+    },
+    {
+      "id": "toad",
+      "name": "毒蟾",
+      "emoji": "🐸",
+      "hp_base": {"min": 28, "max": 36},
+      "intents": [
+        {"type": "atk", "value": 8, "weight": 30},
+        {"type": "atk", "value": 14, "weight": 30},
+        {"type": "atk", "value": 18, "weight": 20},
+        {"type": "poison", "value": 3, "weight": 20}
+      ],
+      "enrage_below": null,
+      "special": "交替",
+      "special_desc": "普攻/强攻交替"
+    },
+
+    {
+      "id": "boar",
+      "name": "嗜血野猪妖",
+      "emoji": "🐗",
+      "hp_base": {"min": 50, "max": 62},
+      "intents": [
+        {"type": "atk", "value": 14, "weight": 40},
+        {"type": "atk", "value": 22, "weight": 25},
+        {"type": "charge", "weight": 20},
+        {"type": "def", "blk": 8, "weight": 15}
+      ],
+      "enrage_below": 0.25,
+      "enrage_bonus": {"atk": 6},
+      "special": "enrage",
+      "special_desc": "HP<25%时，所有攻击+6伤害"
+    },
+    {
+      "id": "spider",
+      "name": "幽冥蛛后",
+      "emoji": "🕸️",
+      "hp_base": {"min": 55, "max": 68},
+      "intents": [
+        {"type": "atk", "value": 10, "weight": 30},
+        {"type": "atk", "value": 17, "weight": 20},
+        {"type": "def", "blk": 12, "weight": 20},
+        {"type": "special", "name": "产卵", "weight": 30}
+      ],
+      "enrage_below": null,
+      "special": "spawn",
+      "special_desc": "召唤8HP小蛛（最多同时2只）"
+    },
+
+    {
+      "id": "boss",
+      "name": "巨蝠妖",
+      "emoji": "🦇",
+      "hp_base": {"min": 70, "max": 82},
+      "is_boss": true,
+      "enrage_below": 0.30,
+      "intents_normal": [
+        {"type": "atk", "value": 11, "weight": 30},
+        {"type": "atk_lifesteal", "value": 15, "weight": 25},
+        {"type": "atk", "value": 17, "weight": 25},
+        {"type": "charge", "weight": 20}
+      ],
+      "intents_enrage": [
+        {"type": "atk", "value": 19, "weight": 25},
+        {"type": "atk_blk", "value": 19, "blk": 8, "weight": 25},
+        {"type": "charge", "weight": 20},
+        {"type": "atk", "value": 34, "weight": 30}
+      ],
+      "dialogue": {
+        "start": "又来了一个…让我看看你的脸。",
+        "enrage": "你的脸…和我一样模糊。",
+        "death": "原来…这就是看清自己的感觉。"
+      }
+    }
+  ]
+}

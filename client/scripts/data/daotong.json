@@ -1,0 +1,65 @@
+{
+  "description": "凡人修仙卡牌肉鸽 — 6种道统配置",
+  "daotong": [
+    {
+      "id": "basic",
+      "name": "无名散修",
+      "desc": "无特殊加成",
+      "learn_cost": null,
+      "unlock_condition": null,
+      "bonus": {},
+      "initial_deck_add": [],
+      "initial_deck_remove": []
+    },
+    {
+      "id": "yanhuo",
+      "name": "炎火道统",
+      "desc": "攻击+1",
+      "learn_cost": {"lingcao": 4, "yaodan": 2},
+      "unlock_condition": {"type": "win_count", "value": 1},
+      "bonus": {"atk_dmg": 1},
+      "initial_deck_add": ["sanmei_5", "huoshe_1"],
+      "initial_deck_remove": ["huoya_0", "huoya_0"]
+    },
+    {
+      "id": "muling",
+      "name": "木灵道统",
+      "desc": "生命+5，格挡+2",
+      "learn_cost": {"lingcao": 5, "yaodan": 1},
+      "unlock_condition": {"type": "win_count", "value": 1},
+      "bonus": {"max_hp": 5, "blk": 2},
+      "initial_deck_add": ["yidu_15", "huichun_13"],
+      "initial_deck_remove": ["lingcao_0"]
+    },
+    {
+      "id": "houtu_d",
+      "name": "厚土道统",
+      "desc": "格挡+3，生命+3",
+      "learn_cost": {"kuangshi": 4, "yaodan": 1},
+      "unlock_condition": {"type": "win_count", "value": 1},
+      "bonus": {"blk": 3, "max_hp": 3},
+      "initial_deck_add": ["shanbeng_24", "lingdun_21"],
+      "initial_deck_remove": ["huoya_0", "huoya_0"]
+    },
+    {
+      "id": "jinrui",
+      "name": "金锐道统",
+      "desc": "攻击+2，暴击+5%",
+      "learn_cost": {"kuangshi": 5, "yaodan": 2},
+      "unlock_condition": {"type": "win_count", "value": 1},
+      "bonus": {"atk_dmg": 2, "crit_chance": 5},
+      "initial_deck_add": ["jinguang_37", "fengren_39"],
+      "initial_deck_remove": ["huoya_0"]
+    },
+    {
+      "id": "shuiyun",
+      "name": "水云道统",
+      "desc": "灵力+1",
+      "learn_cost": {"lingcao": 3, "kuangshi": 3, "yaodan": 1},
+      "unlock_condition": {"type": "win_count", "value": 1},
+      "bonus": {"max_sp": 1},
+      "initial_deck_add": ["shuibo_28", "hanbing_29"],
+      "initial_deck_remove": ["lingcao_0"]
+    }
+  ]
+}

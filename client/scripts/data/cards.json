@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "description": "凡人修仙卡牌肉鸽 — 60张功法卡牌数据",
+  "cards": [
+    {
+      "id": "huoya_0", "name": "火鸦", "type": "atk", "cost": 1,
+      "effects": {"dmg": 6}, "el": "fire", "desc": "造成6伤害",
+      "rarity": "starter", "upgraded": false
+    },
+    {
+      "id": "lingcao_0", "name": "灵草护体", "type": "def", "cost": 1,
+      "effects": {"blk": 5}, "el": "wood", "desc": "获得5格挡",
+      "rarity": "starter", "upgraded": false
+    },
+    {
+      "id": "danhuo_0", "name": "丹火引燃", "type": "skill", "cost": 0,
+      "effects": {"draw": 1}, "special": {"spFire": 1},
+      "el": "fire", "desc": "抽1张；手牌有火牌则+1灵力",
+      "rarity": "starter", "upgraded": false
+    },
+    {
+      "id": "yaolu_0", "name": "药炉感悟", "type": "skill", "cost": 0,
+      "effects": {}, "special": {"blkPerFire": 2},
+      "el": "none", "desc": "每打出1张火牌获得2格挡",
+      "rarity": "starter", "upgraded": false
+    },
+
+    {
+      "id": "huoshe_1", "name": "火蛇符", "type": "atk", "cost": 1,
+      "effects": {"dmg": 4, "burn": 2}, "el": "fire",
+      "desc": "4伤害+2灼烧", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "huoyu_2", "name": "火羽箭", "type": "atk", "cost": 1,
+      "effects": {"dmg": 7}, "el": "fire",
+      "desc": "造成7伤害", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "yinhuo_3", "name": "引火诀", "type": "skill", "cost": 0,
+      "effects": {}, "special": {"nextAtk": 3, "burn": 1},
+      "el": "fire", "desc": "下张攻击+3+1灼烧",
+      "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "lieyan_4", "name": "烈焰护盾", "type": "def", "cost": 1,
+      "effects": {"blk": 5, "burn": 2}, "el": "fire",
+      "desc": "5格挡+敌人2灼烧", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "sanmei_5", "name": "三昧真火", "type": "atk", "cost": 2,
+      "effects": {"dmg": 14, "burn": 3}, "el": "fire",
+      "desc": "14伤害+3灼烧", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "danhuo_6", "name": "丹火淬体", "type": "def", "cost": 1,
+      "effects": {"blk": 6}, "special": {"nextAtk": 4},
+      "el": "fire", "desc": "6格挡+下次攻击+4",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "huoya_7", "name": "火鸦变", "type": "skill", "cost": 1,
+      "effects": {}, "special": {"fireCrowBonus": 3},
+      "el": "fire", "desc": "所有火鸦本局+3伤害",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "yanbao_8", "name": "炎爆术", "type": "atk", "cost": 2,
+      "effects": {"dmg": 10, "burn": 2}, "el": "fire",
+      "desc": "10伤害+2灼烧", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "lianyu_9", "name": "炼狱火海", "type": "atk", "cost": 3,
+      "effects": {"dmg": 12, "burn": 4}, "el": "fire",
+      "desc": "AOE 12伤害+4灼烧", "rarity": "blue", "upgraded": false
+    },
+    {
+      "id": "danyi_10", "name": "丹意凝形", "type": "skill", "cost": 1,
+      "effects": {}, "special": {"danYiStacks": 1},
+      "el": "fire", "desc": "被动：每打出火牌+1攻击/层",
+      "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "muteng_11", "name": "木藤符", "type": "atk", "cost": 1,
+      "effects": {"dmg": 4, "blk": 4}, "el": "wood",
+      "desc": "4伤害+4格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "duwu_12", "name": "毒雾符", "type": "atk", "cost": 1,
+      "effects": {"dmg": 2, "poison": 3}, "el": "wood",
+      "desc": "2伤害+3中毒", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "huichun_13", "name": "回春术", "type": "skill", "cost": 0,
+      "effects": {"heal": 5}, "el": "wood",
+      "desc": "回复5生命", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "lingmu_14", "name": "灵木护盾", "type": "def", "cost": 1,
+      "effects": {"blk": 7}, "el": "wood",
+      "desc": "获得7格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "yidu_15", "name": "以毒攻毒", "type": "atk", "cost": 1,
+      "effects": {}, "special": {"poisonDmg": true, "poisonMax": 15},
+      "el": "wood", "desc": "造成中毒层数伤害（上限15）",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "kumu_16", "name": "枯木逢春", "type": "atk", "cost": 1,
+      "effects": {"dmg": 5, "heal": 3}, "el": "wood",
+      "desc": "5伤害+回复3HP", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "wandu_17", "name": "万毒阵", "type": "skill", "cost": 1,
+      "effects": {"poison": 4}, "el": "wood",
+      "desc": "施加4中毒", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "shihun_18", "name": "噬魂毒", "type": "atk", "cost": 2,
+      "effects": {"poison": 5}, "special": {"poisonExtra": 1},
+      "el": "wood", "desc": "5中毒+每层额外+1",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "baicao_19", "name": "百草护元", "type": "def", "cost": 2,
+      "effects": {"blk": 15}, "special": {"baicaoPerTurn": 3},
+      "el": "wood", "desc": "15格挡+每回合+3格挡",
+      "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "tuci_20", "name": "土刺符", "type": "atk", "cost": 1,
+      "effects": {"dmg": 8}, "el": "earth",
+      "desc": "造成8伤害", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "lingdun_21", "name": "灵盾符", "type": "def", "cost": 1,
+      "effects": {"blk": 8}, "el": "earth",
+      "desc": "获得8格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "luoshi_22", "name": "落石术", "type": "atk", "cost": 1,
+      "effects": {"dmg": 6, "blk": 3}, "el": "earth",
+      "desc": "6伤害+3格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "houtu_23", "name": "厚土壁", "type": "def", "cost": 1,
+      "effects": {"blk": 5}, "special": {"nextTurnBlk": 2},
+      "el": "earth", "desc": "获得5格挡（下回合+2）",
+      "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "shanbeng_24", "name": "山崩诀", "type": "atk", "cost": 2,
+      "effects": {"dmg": 12, "blk": 5}, "el": "earth",
+      "desc": "12伤害+5格挡", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "yanjia_25", "name": "岩甲术", "type": "def", "cost": 1,
+      "effects": {"blk": 10}, "el": "earth",
+      "desc": "获得10格挡", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "dadi_26", "name": "大地守护", "type": "def", "cost": 2,
+      "effects": {"blk": 18}, "el": "earth",
+      "desc": "获得18格挡", "rarity": "blue", "upgraded": false
+    },
+    {
+      "id": "dilie_27", "name": "地裂符", "type": "atk", "cost": 2,
+      "effects": {"dmg": 16}, "el": "earth",
+      "desc": "造成16伤害", "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "shuibo_28", "name": "水波术", "type": "atk", "cost": 1,
+      "effects": {"dmg": 5, "draw": 1}, "el": "water",
+      "desc": "5伤害+抽1张", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "hanbing_29", "name": "寒冰符", "type": "def", "cost": 1,
+      "effects": {"blk": 6}, "el": "water",
+      "desc": "获得6格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "chaoxi_30", "name": "潮汐诀", "type": "atk", "cost": 1,
+      "effects": {"dmg": 4, "blk": 3}, "el": "water",
+      "desc": "4伤害+3格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "ningbing_31", "name": "凝冰箭", "type": "atk", "cost": 1,
+      "effects": {"dmg": 6}, "special": {"atkDebuffNext": 2},
+      "el": "water", "desc": "6伤害（敌人下回合-2攻击）",
+      "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "bingfeng_32", "name": "冰封术", "type": "def", "cost": 1,
+      "effects": {"blk": 9}, "el": "water",
+      "desc": "获得9格挡", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "shuijing_33", "name": "水镜盾", "type": "def", "cost": 2,
+      "effects": {"blk": 12, "draw": 1}, "el": "water",
+      "desc": "12格挡+抽1张", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "shuiling_34", "name": "水灵护体", "type": "def", "cost": 1,
+      "effects": {"blk": 4, "heal": 3}, "el": "water",
+      "desc": "4格挡+回复3HP", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "shuangdong_35", "name": "霜冻术", "type": "atk", "cost": 2,
+      "effects": {"dmg": 8, "burn": 2}, "el": "water",
+      "desc": "8伤害+2灼烧（冰火交融）",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "xuanbing_36", "name": "玄冰诀", "type": "atk", "cost": 2,
+      "effects": {"dmg": 11, "draw": 2}, "el": "water",
+      "desc": "11伤害+抽2张", "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "jinguang_37", "name": "金光咒", "type": "atk", "cost": 1,
+      "effects": {"dmg": 9}, "el": "metal",
+      "desc": "造成9伤害", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "jinren_38", "name": "金刃符", "type": "atk", "cost": 1,
+      "effects": {"dmg": 7}, "el": "metal",
+      "desc": "造成7伤害", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "fengren_39", "name": "锋刃术", "type": "atk", "cost": 0,
+      "effects": {"dmg": 4}, "el": "metal",
+      "desc": "造成4伤害（免费）", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "jinsi_40", "name": "金丝护甲", "type": "def", "cost": 1,
+      "effects": {"blk": 6}, "el": "metal",
+      "desc": "获得6格挡", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "ruijin_41", "name": "锐金诀", "type": "atk", "cost": 1,
+      "effects": {"dmg": 11}, "el": "metal",
+      "desc": "造成11伤害", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "chuanjia_42", "name": "穿甲符", "type": "atk", "cost": 2,
+      "effects": {"dmg": 14}, "special": {"ignoreBlk": true},
+      "el": "metal", "desc": "14伤害（无视格挡）",
+      "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "jingang_43", "name": "金刚罩", "type": "def", "cost": 1,
+      "effects": {"blk": 8}, "el": "metal",
+      "desc": "获得8格挡", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "jianqi_44", "name": "剑气诀", "type": "atk", "cost": 1,
+      "effects": {"dmg": 6, "draw": 1}, "el": "metal",
+      "desc": "6伤害+抽1张", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "wanjian_45", "name": "万剑归宗", "type": "atk", "cost": 3,
+      "effects": {"dmg": 20}, "el": "metal",
+      "desc": "造成20伤害", "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "lingqi_46", "name": "灵气运转", "type": "skill", "cost": 0,
+      "effects": {"draw": 2}, "special": {"discard": 1},
+      "el": "none", "desc": "抽2张牌，弃1张牌",
+      "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "tiaoxi_47", "name": "调息术", "type": "skill", "cost": 0,
+      "effects": {"heal": 4}, "el": "none",
+      "desc": "回复4生命", "rarity": "white", "upgraded": false
+    },
+    {
+      "id": "liandan_48", "name": "炼丹手记", "type": "skill", "cost": 1,
+      "effects": {"draw": 3}, "el": "none",
+      "desc": "抽3张牌", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "yuqi_49", "name": "御气诀", "type": "skill", "cost": 1,
+      "effects": {"blk": 5, "draw": 1, "heal": 2}, "el": "none",
+      "desc": "5格挡+抽1张+回复2", "rarity": "green", "upgraded": false
+    },
+    {
+      "id": "cuihuo_50", "name": "淬火术", "type": "skill", "cost": 0,
+      "effects": {}, "special": {"nextAtk": 6},
+      "el": "none", "desc": "下张攻击+6伤害",
+      "rarity": "blue", "upgraded": false
+    },
+
+    {
+      "id": "xuhuo_51", "name": "蓄火诀", "type": "skill", "cost": 1,
+      "effects": {}, "el": "fire",
+      "desc": "下2张攻击牌+3伤害",
+      "rarity": "green", "upgraded": false,
+      "charge": {"type": "atk", "effect": {"dmg": 3}, "charges": 2}
+    },
+    {
+      "id": "ningdu_52", "name": "凝毒术", "type": "skill", "cost": 1,
+      "effects": {}, "el": "wood",
+      "desc": "下2张牌附加2中毒",
+      "rarity": "green", "upgraded": false,
+      "charge": {"type": "any", "effect": {"poison": 2}, "charges": 2}
+    },
+    {
+      "id": "houtu_in_53", "name": "厚土印", "type": "skill", "cost": 1,
+      "effects": {}, "el": "earth",
+      "desc": "下2张防御牌+3格挡",
+      "rarity": "green", "upgraded": false,
+      "charge": {"type": "def", "effect": {"blk": 3}, "charges": 2}
+    },
+    {
+      "id": "xuchao_54", "name": "蓄潮术", "type": "skill", "cost": 0,
+      "effects": {}, "el": "water",
+      "desc": "下2张牌费用-1",
+      "rarity": "green", "upgraded": false,
+      "charge": {"type": "any", "effect": {"cost": -1}, "charges": 2}
+    },
+    {
+      "id": "moren_55", "name": "磨刃诀", "type": "skill", "cost": 1,
+      "effects": {}, "el": "metal",
+      "desc": "下2张攻击牌+4伤害",
+      "rarity": "green", "upgraded": false,
+      "charge": {"type": "atk", "effect": {"dmg": 4}, "charges": 2}
+    },
+
+    {
+      "id": "beishui_56", "name": "背水一战", "type": "atk", "cost": 1,
+      "effects": {"dmg": 12}, "el": "fire",
+      "desc": "12伤害，HP<30%时翻倍至24",
+      "rarity": "green", "upgraded": false,
+      "condition": {"type": "hpBelow30", "scale": 2}
+    },
+    {
+      "id": "kumuji_57", "name": "枯木逢春·极", "type": "skill", "cost": 1,
+      "effects": {"heal": 10}, "el": "wood",
+      "desc": "HP<50%回复10，否则回复3",
+      "rarity": "green", "upgraded": false,
+      "condition": {"type": "hpBelow50", "failHeal": 3}
+    },
+    {
+      "id": "fanji_58", "name": "反击壁", "type": "def", "cost": 1,
+      "effects": {"blk": 8}, "el": "earth",
+      "desc": "8格挡，若本回合受伤反射5伤害",
+      "rarity": "green", "upgraded": false,
+      "condition": {"type": "tookDmgThisTurn", "reflectDmg": 5}
+    },
+    {
+      "id": "xuanbo_59", "name": "玄波诀", "type": "atk", "cost": 2,
+      "effects": {"dmg": 8}, "el": "water",
+      "desc": "8伤害，手牌≤3抽3",
+      "rarity": "green", "upgraded": false,
+      "condition": {"type": "handLE3", "drawOnCond": 3}
+    },
+    {
+      "id": "pofu_60", "name": "破釜斩", "type": "atk", "cost": 2,
+      "effects": {"dmg": 15}, "el": "metal",
+      "desc": "15伤害，手牌每少1张+2伤害",
+      "rarity": "green", "upgraded": false,
+      "condition": {"type": "missingCards", "dmgPerMissing": 2}
+    }
+  ]
+}
