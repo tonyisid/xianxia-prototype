@@ -288,6 +288,8 @@ const REALM_XP=[0,100,200,350,500,700,1000,1400,1900,2500,3200,4000,5000,6200,75
 
 // 丹方
 const PILL_RECIPES=[
+  {id:'pojing',name:'突破丹',desc:'突破层级所需丹药',cost:2,effect:{},isBreakDan:true},
+  {id:'zhuji',name:'筑基丹',desc:'突破境界所需稀有丹药',cost:5,oreCost:3,effect:{},isRealmDan:true},
   {id:'hp5',name:'小回春丹',desc:'永久 maxHp+5',cost:2,effect:{maxHp:5}},
   {id:'sp1',name:'凝气丹',desc:'每场战斗灵力+1',cost:3,effect:{sp:1}},
   {id:'blk3',name:'铁壁丹',desc:'每场战斗初始格挡+3',cost:2,effect:{block:3}},
@@ -376,6 +378,8 @@ function defaultChar(){
     xiuwei:0,
     lingcao:3,
     kuangshi:2,
+    poJingDan:0, // 突破丹（破层用）
+    zhuJiDan:0,  // 筑基丹（破境用）
     equippedPills:[],
     equippedArtifacts:[],
     ownedPills:[],
@@ -422,7 +426,9 @@ function renderHub(){
     <div class="xiuwei-text">修为 ${char.xiuwei} / ${getNextXp()}</div>`;
   $('hub-materials').innerHTML=`
     <span>🌿 灵草 ${char.lingcao}</span>
-    <span>⛏️ 矿石 ${char.kuangshi}</span>`;
+    <span>⛏️ 矿石 ${char.kuangshi}</span>
+    <span>💊 突破丹 ${char.poJingDan}</span>
+    <span>✨ 筑基丹 ${char.zhuJiDan}</span>`;
 }
 
 // ===== 修炼系统 =====
@@ -430,16 +436,30 @@ function showCultivate(){
   renderCultivate();
   showModal('cultivate-modal');
 }
+function isRealmBreak(){return (char.realm+1)%3===0&&char.realm>0}
 function renderCultivate(){
   let canBreak=char.xiuwei>=getNextXp()&&char.realm<REALM_NAMES.length-1;
+  let needRealmDan=isRealmBreak();
+  let danOk=needRealmDan?char.zhuJiDan>0:char.poJingDan>0;
+  let danName=needRealmDan?'✨ 筑基丹':'💊 突破丹';
+  let danHave=needRealmDan?char.zhuJiDan:char.poJingDan;
   $('cultivate-info').innerHTML=`
     <div class="realm">${getRealmName()}</div>
     <div class="xiuwei-bar"><div class="xiuwei-fill" style="width:${Math.min(100,char.xiuwei/getNextXp()*100)}%"></div></div>
     <div class="xiuwei-text">修为 ${char.xiuwei} / ${getNextXp()}</div>`;
+  let btBtn='';
+  if(canBreak){
+    if(danOk){
+      btBtn=`<button class="breakthrough-btn" onclick="doBreakthrough()">✨ 突破（消耗${danName}×1） ✨</button>`;
+    }else{
+      btBtn=`<div style="color:#e74c3c;font-size:14px;margin:10px 0">突破需要 ${danName}（当前${danHave}个）</div><div style="color:#6a6a7e;font-size:12px">去炼丹炉炼制吧！</div>`;
+    }
+  }
   $('cultivate-area').innerHTML=`
     <button class="cultivate-btn" onclick="doCultivate()">🧘<br><span style="font-size:12px">打坐</span></button>
-    ${canBreak?'<button class="breakthrough-btn" onclick="doBreakthrough()">✨ 突破境界 ✨</button>':''}
-    <div style="color:#6a6a7e;font-size:13px">每次打坐获得10~30修为</div>`;
+    ${btBtn}
+    <div style="color:#6a6a7e;font-size:13px;margin-top:10px">每次打坐获得10~30修为</div>
+    <div style="color:#6a6a7e;font-size:12px;margin-top:8px">突破消耗：破层→💊突破丹 | 破境(每3层)→✨筑基丹</div>`;
 }
 function doCultivate(){
   let gain=rand(10,30);
@@ -449,6 +469,14 @@ function doCultivate(){
 }
 function doBreakthrough(){
   if(char.xiuwei<getNextXp()||char.realm>=REALM_NAMES.length-1)return;
+  let needRealmDan=isRealmBreak();
+  if(needRealmDan){
+    if(char.zhuJiDan<=0)return;
+    char.zhuJiDan--;
+  }else{
+    if(char.poJingDan<=0)return;
+    char.poJingDan--;
+  }
   char.xiuwei-=getNextXp();
   char.realm++;
   saveChar();
@@ -465,9 +493,11 @@ function renderAlchemy(){
   $('alchemy-herbs').textContent=char.lingcao;
   let html='';
   PILL_RECIPES.forEach(r=>{
-    let can=char.lingcao>=r.cost;
+    let oreNeeded=r.oreCost||0;
+    let can=char.lingcao>=r.cost&&char.kuangshi>=oreNeeded;
+    let costText=`🌿×${r.cost}`+(oreNeeded?` ⛏️×${oreNeeded}`:'');
     html+=`<div class="recipe-card${can?'':' disabled'}" onclick="${can?`craftPill('${r.id}')`:''}">
-      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">🌿×${r.cost}</div></div>`;
+      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">${costText}</div></div>`;
   });
   $('alchemy-recipes').innerHTML=html;
   renderPillSlots();
@@ -475,7 +505,13 @@ function renderAlchemy(){
 function craftPill(id){
   let r=PILL_RECIPES.find(p=>p.id===id);
   if(!r||char.lingcao<r.cost)return;
+  let oreNeeded=r.oreCost||0;
+  if(char.kuangshi<oreNeeded)return;
   char.lingcao-=r.cost;
+  char.kuangshi-=oreNeeded;
+  // 突破丹/筑基丹直接加库存
+  if(r.isBreakDan){char.poJingDan++;saveChar();renderAlchemy();renderHub();return}
+  if(r.isRealmDan){char.zhuJiDan++;saveChar();renderAlchemy();renderHub();return}
   char.ownedPills.push({...r.effect,_name:r.name,_id:r.id});
   saveChar();renderAlchemy();renderHub();
 }
