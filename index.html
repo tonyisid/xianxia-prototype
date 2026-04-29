@@ -288,14 +288,14 @@ const REALM_XP=[0,100,200,350,500,700,1000,1400,1900,2500,3200,4000,5000,6200,75
 
 // 丹方
 const PILL_RECIPES=[
-  {id:'pojing',name:'突破丹',desc:'突破层级所需丹药',cost:2,effect:{},isBreakDan:true},
-  {id:'zhuji',name:'筑基丹',desc:'突破境界所需稀有丹药',cost:5,oreCost:3,effect:{},isRealmDan:true},
-  {id:'hp5',name:'小回春丹',desc:'永久 maxHp+5',cost:2,effect:{maxHp:5}},
-  {id:'sp1',name:'凝气丹',desc:'每场战斗灵力+1',cost:3,effect:{sp:1}},
-  {id:'blk3',name:'铁壁丹',desc:'每场战斗初始格挡+3',cost:2,effect:{block:3}},
-  {id:'psn2',name:'淬毒丹',desc:'中毒牌+2中毒',cost:3,effect:{poison:2}},
-  {id:'brn2',name:'烈焰丹',desc:'灼烧牌+2灼烧',cost:3,effect:{burn:2}},
-  {id:'cln',name:'洗髓丹',desc:'下次历练可移除1张起始牌',cost:5,effect:{removeCard:1}},
+  {id:'pojing',name:'突破丹',desc:'突破层级所需丹药',cost:{lingcao:2,yaodan:1},effect:{},isBreakDan:true},
+  {id:'zhuji',name:'筑基丹',desc:'突破境界所需稀有丹药',cost:{lingcao:3,kuangshi:2,yaodan:2},effect:{},isRealmDan:true},
+  {id:'hp5',name:'小回春丹',desc:'永久 maxHp+5',cost:{lingcao:2},effect:{maxHp:5}},
+  {id:'sp1',name:'凝气丹',desc:'每场战斗灵力+1',cost:{lingcao:2,kuangshi:1},effect:{sp:1}},
+  {id:'blk3',name:'铁壁丹',desc:'每场战斗初始格挡+3',cost:{lingcao:1,kuangshi:2},effect:{block:3}},
+  {id:'psn2',name:'淬毒丹',desc:'中毒牌+2中毒',cost:{lingcao:2,yaodan:1},effect:{poison:2}},
+  {id:'brn2',name:'烈焰丹',desc:'灼烧牌+2灼烧',cost:{lingcao:2,yaodan:1},effect:{burn:2}},
+  {id:'cln',name:'洗髓丹',desc:'下次历练可移除1张起始牌',cost:{lingcao:3,kuangshi:2,yaodan:1},effect:{removeCard:1}},
 ];
 // 器方
 const ARTIFACT_RECIPES=[
@@ -378,8 +378,9 @@ function defaultChar(){
     xiuwei:0,
     lingcao:3,
     kuangshi:2,
-    poJingDan:0, // 突破丹（破层用）
-    zhuJiDan:0,  // 筑基丹（破境用）
+    yaodan:0,     // 妖丹（精英掉落）
+    poJingDan:0,
+    zhuJiDan:0,
     equippedPills:[],
     equippedArtifacts:[],
     ownedPills:[],
@@ -402,7 +403,7 @@ let G={deck:[],hand:[],discard:[],exhaust:[],
   eIdx:0,intIdx:0,turn:0,inBattle:false,
   drugs:{},nodeIdx:0,
   fireCrowBonus:0,danYiStacks:0,baicaoPerTurn:0,playHist:{},killedElite:0,
-  runLingcao:0,runKuangshi:0};
+  runLingcao:0,runKuangshi:0,runYaodan:0};
 
 // ===== 工具 =====
 function $(id){return document.getElementById(id)}
@@ -427,6 +428,7 @@ function renderHub(){
   $('hub-materials').innerHTML=`
     <span>🌿 灵草 ${char.lingcao}</span>
     <span>⛏️ 矿石 ${char.kuangshi}</span>
+    <span>🔮 妖丹 ${char.yaodan}</span>
     <span>💊 突破丹 ${char.poJingDan}</span>
     <span>✨ 筑基丹 ${char.zhuJiDan}</span>`;
 }
@@ -493,23 +495,26 @@ function renderAlchemy(){
   $('alchemy-herbs').textContent=char.lingcao;
   let html='';
   PILL_RECIPES.forEach(r=>{
-    let oreNeeded=r.oreCost||0;
-    let can=char.lingcao>=r.cost&&char.kuangshi>=oreNeeded;
-    let costText=`🌿×${r.cost}`+(oreNeeded?` ⛏️×${oreNeeded}`:'');
+    let c=r.cost;
+    let can=(c.lingcao||0)<=char.lingcao&&(c.kuangshi||0)<=char.kuangshi&&(c.yaodan||0)<=char.yaodan;
+    let costParts=[];
+    if(c.lingcao) costParts.push(`🌿×${c.lingcao}`);
+    if(c.kuangshi) costParts.push(`⛏️×${c.kuangshi}`);
+    if(c.yaodan) costParts.push(`🔮×${c.yaodan}`);
     html+=`<div class="recipe-card${can?'':' disabled'}" onclick="${can?`craftPill('${r.id}')`:''}">
-      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">${costText}</div></div>`;
+      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">${costParts.join(' ')}</div></div>`;
   });
   $('alchemy-recipes').innerHTML=html;
   renderPillSlots();
 }
 function craftPill(id){
   let r=PILL_RECIPES.find(p=>p.id===id);
-  if(!r||char.lingcao<r.cost)return;
-  let oreNeeded=r.oreCost||0;
-  if(char.kuangshi<oreNeeded)return;
-  char.lingcao-=r.cost;
-  char.kuangshi-=oreNeeded;
-  // 突破丹/筑基丹直接加库存
+  if(!r)return;
+  let c=r.cost;
+  if((c.lingcao||0)>char.lingcao||(c.kuangshi||0)>char.kuangshi||(c.yaodan||0)>char.yaodan)return;
+  if(c.lingcao) char.lingcao-=c.lingcao;
+  if(c.kuangshi) char.kuangshi-=c.kuangshi;
+  if(c.yaodan) char.yaodan-=c.yaodan;
   if(r.isBreakDan){char.poJingDan++;saveChar();renderAlchemy();renderHub();return}
   if(r.isRealmDan){char.zhuJiDan++;saveChar();renderAlchemy();renderHub();return}
   char.ownedPills.push({...r.effect,_name:r.name,_id:r.id});
@@ -599,7 +604,7 @@ function unequipArtifact(i){
 
 // ===== 背包 =====
 function showInventory(){
-  let html='<div class="hub-materials" style="margin-bottom:20px"><span>🌿 灵草 '+char.lingcao+'</span><span>⛏️ 矿石 '+char.kuangshi+'</span></div>';
+  let html='<div class="hub-materials" style="margin-bottom:20px"><span>🌿 灵草 '+char.lingcao+'</span><span>⛏️ 矿石 '+char.kuangshi+'</span><span>🔮 妖丹 '+char.yaodan+'</span></div>';
   html+='<h3>丹药效果</h3><div style="margin-bottom:15px">';
   char.equippedPills.forEach(p=>{html+=`<div style="color:#d4a574;font-size:14px;margin:4px 0">💊 ${p._name}</div>`});
   if(!char.equippedPills.length) html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
@@ -943,8 +948,8 @@ function useDrug(i){
 
 function addMaterials(normal,elite,boss){
   if(normal){G.runLingcao+=2}
-  if(elite){G.runLingcao+=3;G.runKuangshi+=2}
-  if(boss){G.runLingcao+=5;G.runKuangshi+=3}
+  if(elite){G.runLingcao+=3;G.runKuangshi+=2;G.runYaodan+=1}
+  if(boss){G.runLingcao+=5;G.runKuangshi+=3;G.runYaodan+=2}
 }
 
 function enemyDefeated(){
@@ -968,7 +973,7 @@ function playerDefeated(){
   setTimeout(()=>{
     show('end-screen');$('end-title').textContent='💀 魂归轮回';$('end-title').style.color='#e74c3c';
     $('end-desc').textContent=`倒在了${G.ename}面前…第${G.nodeIdx+1}/${MAP.length}层`;
-    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi}`;
+    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi} 🔮 妖丹×${G.runYaodan}`;
     $('end-deck').textContent='最终牌组：'+G.deck.map(c=>c.name).join(', ');
   },800);
 }
@@ -977,7 +982,7 @@ function victory(){
   setTimeout(()=>{
     show('end-screen');$('end-title').textContent='🎉 通关幽冥谷！';$('end-title').style.color='#f1c40f';
     $('end-desc').textContent=`剩余${G.hp}生命 | 共${G.turn}回合`;
-    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi}`;
+    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi} 🔮 妖丹×${G.runYaodan}`;
     let allCards=[...G.deck,...G.discard,...G.hand];
     let cardNames={};allCards.forEach(c=>{cardNames[c.name]=(cardNames[c.name]||0)+1});
     $('end-deck').textContent='最终牌组：'+Object.entries(cardNames).map(([n,c])=>`${n}×${c}`).join(', ');
@@ -987,6 +992,7 @@ function victory(){
 function backToHub(){
   char.lingcao+=G.runLingcao;
   char.kuangshi+=G.runKuangshi;
+  char.yaodan+=G.runYaodan;
   // 战斗修为奖励
   char.xiuwei+=G.nodeIdx*20+G.turn*2;
   saveChar();
