@@ -8,19 +8,65 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overflow:hidden;height:100vh;user-select:none}
 .hidden{display:none!important}
-/* 标题 */
-#title-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#0d0d1a,#1a1a2e 50%,#2d1f3d)}
-#title-screen h1{font-size:42px;color:#d4a574;text-shadow:0 0 20px rgba(212,165,116,.5);margin-bottom:10px;letter-spacing:8px}
-#title-screen p{color:#8a7f72;margin-bottom:40px;font-size:16px}
 .btn{background:linear-gradient(135deg,#3d2b1f,#5a3d2b);border:2px solid #d4a574;color:#d4a574;padding:12px 40px;font-size:18px;cursor:pointer;border-radius:6px;font-family:inherit;transition:all .2s}
 .btn:hover{background:linear-gradient(135deg,#5a3d2b,#7a5d4b);box-shadow:0 0 15px rgba(212,165,116,.4)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-sm{padding:8px 20px;font-size:14px}
+/* Hub */
+#hub-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0d0d1a,#1a1a2e 50%,#2d1f3d);overflow-y:auto;padding:20px}
+.hub-title{font-size:32px;color:#d4a574;text-shadow:0 0 20px rgba(212,165,116,.5);margin:20px 0 5px;letter-spacing:6px}
+.hub-subtitle{color:#6a6a7e;font-size:13px;margin-bottom:15px}
+.hub-info{background:#2a2a3e;border:1px solid #3a3a4e;border-radius:10px;padding:15px 25px;width:100%;max-width:400px;margin-bottom:15px;text-align:center}
+.hub-info .realm{font-size:22px;color:#d4a574;margin-bottom:8px}
+.hub-info .xiuwei-bar{width:100%;height:12px;background:#1a1a2e;border-radius:6px;overflow:hidden;margin:6px 0}
+.hub-info .xiuwei-fill{height:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad);border-radius:6px;transition:width .3s}
+.hub-info .xiuwei-text{font-size:12px;color:#8a8a9e}
+.hub-materials{display:flex;gap:20px;font-size:16px;margin-bottom:20px}
+.hub-materials span{padding:6px 14px;background:#2a2a3e;border-radius:8px;border:1px solid #3a3a4e}
+.hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;width:100%;max-width:400px;margin-bottom:20px}
+.hub-btn{background:#2a2a3e;border:2px solid #4a4a5e;border-radius:12px;padding:25px 15px;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;color:#e0d5c1}
+.hub-btn:hover{border-color:#d4a574;box-shadow:0 0 15px rgba(212,165,116,.3);transform:translateY(-2px)}
+.hub-btn .hb-icon{font-size:32px;margin-bottom:8px}
+.hub-btn .hb-name{font-size:18px;color:#d4a574}
+.hub-btn .hb-desc{font-size:11px;color:#6a6a7e;margin-top:4px}
+.linggen-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:16px;font-weight:bold;margin:6px 0}
+.lg-fire{background:rgba(231,76,60,.2);color:#e74c3c;border:1px solid #e74c3c}
+.lg-wood{background:rgba(46,204,113,.2);color:#2ecc71;border:1px solid #2ecc71}
+.lg-earth{background:rgba(243,156,18,.2);color:#f39c12;border:1px solid #f39c12}
+.lg-metal{background:rgba(189,195,199,.2);color:#bdc3c7;border:1px solid #bdc3c7}
+.lg-water{background:rgba(52,152,219,.2);color:#3498db;border:1px solid #3498db}
+/* Modal overlay */
+.modal{position:absolute;inset:0;background:rgba(10,10,20,.95);z-index:60;display:flex;flex-direction:column;align-items:center;padding:20px;overflow-y:auto}
+.modal h2{color:#d4a574;font-size:24px;margin:10px 0 20px}
+.modal-close{position:absolute;top:15px;right:20px;font-size:28px;color:#6a6a7e;cursor:pointer;background:none;border:none;font-family:inherit}
+.modal-close:hover{color:#d4a574}
+.recipe-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px;margin-bottom:20px}
+.recipe-card{background:#2a2a3e;border:2px solid #4a4a5e;border-radius:10px;padding:15px;cursor:pointer;transition:all .2s;text-align:center}
+.recipe-card:hover:not(.disabled){border-color:#d4a574;box-shadow:0 0 10px rgba(212,165,116,.3)}
+.recipe-card.disabled{opacity:.4;cursor:not-allowed}
+.recipe-card .rc-name{font-size:15px;color:#d4a574;margin-bottom:6px}
+.recipe-card .rc-desc{font-size:12px;color:#8a8a9e;margin-bottom:8px}
+.recipe-card .rc-cost{font-size:12px;color:#6a6a7e}
+.equipped-section{width:100%;max-width:400px;margin-bottom:15px}
+.equipped-section h3{font-size:14px;color:#6a6a7e;margin-bottom:8px}
+.eq-slots{display:flex;gap:8px;flex-wrap:wrap}
+.eq-slot{background:#2a2a3e;border:1px solid #4a4a5e;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;transition:all .2s}
+.eq-slot:hover{border-color:#e74c3c}
+.eq-slot .eq-name{color:#d4a574}
+.eq-slot .eq-unequip{font-size:10px;color:#e74c3c;margin-left:6px}
+.inv-item{background:#2a2a3e;border:1px solid #4a4a5e;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;display:inline-block;margin:4px;transition:all .2s}
+.inv-item:hover{border-color:#2ecc71}
+.cultivate-area{display:flex;flex-direction:column;align-items:center;gap:15px}
+.cultivate-btn{font-size:24px;padding:20px 50px;border-radius:50%;width:120px;height:120px;background:radial-gradient(circle,#5a3d2b,#3d2b1f);border:3px solid #d4a574;color:#d4a574;cursor:pointer;font-family:inherit;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.cultivate-btn:hover{box-shadow:0 0 30px rgba(212,165,116,.5);transform:scale(1.05)}
+.cultivate-btn:disabled{opacity:.3;cursor:not-allowed}
+.breakthrough-btn{background:linear-gradient(135deg,#8e44ad,#9b59b6);border:2px solid #d4a574;color:#f1c40f;padding:15px 40px;font-size:20px;cursor:pointer;border-radius:8px;font-family:inherit;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(241,196,15,.3)}50%{box-shadow:0 0 25px rgba(241,196,15,.6)}}
 /* 丹药选择 */
 #drug-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#0d0d1a,#1a1a2e)}
 #drug-screen h2{color:#d4a574;font-size:28px;margin-bottom:30px}
-.drug-select{display:flex;gap:30px;margin-bottom:40px}
-.drug-item{background:#2a2a3e;border:2px solid #4a4a5e;border-radius:10px;padding:20px;width:160px;text-align:center}
+.drug-select{display:flex;gap:30px;margin-bottom:40px;flex-wrap:wrap;justify-content:center}
+.drug-item{background:#2a2a3e;border:2px solid #4a4a5e;border-radius:10px;padding:20px;width:140px;text-align:center}
 .drug-item .name{color:#d4a574;font-size:18px;margin-bottom:8px}
 .drug-item .desc{color:#8a8a9e;font-size:13px;margin-bottom:15px;min-height:40px}
 .drug-item .ctrl{display:flex;align-items:center;justify-content:center;gap:15px}
@@ -57,7 +103,7 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
 .log-damage{color:#e74c3c}.log-heal{color:#2ecc71}.log-block{color:#95a5a6}.log-burn{color:#e67e22}.log-info{color:#d4a574}.log-combo{color:#f1c40f;font-weight:bold}
 /* 玩家 */
 #player-area{flex:1;display:flex;flex-direction:column}
-#player-info{display:flex;align-items:center;padding:10px 20px;gap:20px;border-bottom:1px solid #2a2a3e}
+#player-info{display:flex;align-items:center;padding:10px 20px;gap:20px;border-bottom:1px solid #2a2a3e;flex-wrap:wrap}
 .player-hp-bar{width:200px;height:16px;background:#3a1a1a;border-radius:8px;border:1px solid #5a3a2a;overflow:hidden}
 .player-hp-fill{height:100%;background:linear-gradient(90deg,#27ae60,#2ecc71);transition:width .4s;border-radius:8px}
 .player-hp-text{font-size:13px;color:#2ecc71}
@@ -85,19 +131,20 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
 .card-earth{border-color:#f39c12}.card-earth .cost{background:#d68910;border-color:#f39c12}
 .card-water{border-color:#3498db}.card-water .cost{background:#2471a3;border-color:#3498db}
 .card-none{border-color:#9b59b6}.card-none .cost{background:#7d3c98;border-color:#9b59b6}
+.card-metal{border-color:#bdc3c7}.card-metal .cost{background:#7f8c8d;border-color:#bdc3c7}
 .combo-popup{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:32px;color:#f1c40f;font-weight:bold;text-shadow:0 0 20px rgba(241,196,15,.6);animation:comboPop 1s forwards;pointer-events:none;z-index:100}
 @keyframes comboPop{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.3)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}
 /* 选卡/事件 */
 #card-select-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,20,.95);z-index:50}
 #card-select-screen h2{color:#d4a574;font-size:24px;margin-bottom:30px}
-.card-choices{display:flex;gap:20px;margin-bottom:30px}
+.card-choices{display:flex;gap:20px;margin-bottom:30px;flex-wrap:wrap;justify-content:center}
 .card-choice{width:130px;height:180px;background:#2a2a3e;border:2px solid #4a4a5e;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;padding:8px;position:relative}
 .card-choice:hover{transform:translateY(-10px);border-color:#d4a574;box-shadow:0 5px 20px rgba(212,165,116,.3)}
 .card-choice .cost{position:absolute;top:-8px;left:-8px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;color:#fff;background:#3498db;border:2px solid #2980b9}
 /* 休息事件 */
 #rest-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,20,.95);z-index:50}
 #rest-screen h2{color:#d4a574;font-size:24px;margin-bottom:30px}
-.rest-options{display:flex;gap:20px;margin-bottom:30px}
+.rest-options{display:flex;gap:20px;margin-bottom:30px;flex-wrap:wrap;justify-content:center}
 .rest-option{background:#2a2a3e;border:2px solid #4a4a5e;border-radius:10px;padding:20px 30px;cursor:pointer;text-align:center;transition:all .2s;min-width:150px}
 .rest-option:hover{border-color:#d4a574;box-shadow:0 0 15px rgba(212,165,116,.3)}
 .rest-option .ro-title{font-size:18px;color:#d4a574;margin-bottom:8px}
@@ -107,16 +154,60 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
 #end-screen h2{font-size:36px;margin-bottom:20px}
 .result-text{font-size:18px;color:#8a8a9e;margin-bottom:10px}
 .deck-list{max-height:200px;overflow-y:auto;margin-bottom:20px;font-size:13px;color:#8a8a9e;line-height:1.8}
+.reward-text{font-size:16px;color:#2ecc71;margin:10px 0}
 </style>
 </head>
 <body>
 
-<div id="title-screen">
-  <h1>凡人修仙</h1>
-  <p>卡牌肉鸽 · 幽冥谷原型 v0.2</p>
-  <button class="btn" onclick="startGame()">开始历练</button>
+<!-- 主界面/洞府 -->
+<div id="hub-screen">
+  <div class="hub-title">凡人修仙</div>
+  <div class="hub-subtitle">卡牌肉鸽 · v0.3</div>
+  <div class="hub-info" id="hub-char-info"></div>
+  <div class="hub-materials" id="hub-materials"></div>
+  <div class="hub-grid">
+    <div class="hub-btn" onclick="enterDungeonFlow()"><div class="hb-icon">⚔️</div><div class="hb-name">历练</div><div class="hb-desc">进入幽冥谷</div></div>
+    <div class="hub-btn" onclick="showCultivate()"><div class="hb-icon">🧘</div><div class="hb-name">修炼</div><div class="hb-desc">打坐积攒修为</div></div>
+    <div class="hub-btn" onclick="showAlchemy()"><div class="hb-icon">⚗️</div><div class="hb-name">炼丹</div><div class="hb-desc">炼制灵丹妙药</div></div>
+    <div class="hub-btn" onclick="showRefine()"><div class="hb-icon">🔨</div><div class="hb-name">炼器</div><div class="hb-desc">炼制法器法宝</div></div>
+  </div>
+  <button class="btn btn-sm" onclick="showInventory()" style="color:#8a8a9e;border-color:#5a5a6e">📦 背包</button>
 </div>
 
+<!-- 修炼弹窗 -->
+<div id="cultivate-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('cultivate-modal')">✕</button>
+  <h2>🧘 洞府修炼</h2>
+  <div id="cultivate-info" class="hub-info" style="margin-bottom:20px"></div>
+  <div class="cultivate-area" id="cultivate-area"></div>
+</div>
+
+<!-- 炼丹弹窗 -->
+<div id="alchemy-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('alchemy-modal')">✕</button>
+  <h2>⚗️ 炼丹炉</h2>
+  <div style="color:#6a6a7e;font-size:14px;margin-bottom:10px">当前灵草：<span id="alchemy-herbs" style="color:#2ecc71">0</span></div>
+  <div class="recipe-grid" id="alchemy-recipes"></div>
+  <div class="equipped-section" id="alchemy-equipped"></div>
+</div>
+
+<!-- 炼器弹窗 -->
+<div id="refine-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('refine-modal')">✕</button>
+  <h2>🔨 炼器台</h2>
+  <div style="color:#6a6a7e;font-size:14px;margin-bottom:10px">当前矿石：<span id="refine-ores" style="color:#f39c12">0</span></div>
+  <div class="recipe-grid" id="refine-recipes"></div>
+  <div class="equipped-section" id="refine-equipped"></div>
+</div>
+
+<!-- 背包弹窗 -->
+<div id="inventory-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('inventory-modal')">✕</button>
+  <h2>📦 储物袋</h2>
+  <div id="inv-content"></div>
+</div>
+
+<!-- 丹药选择 -->
 <div id="drug-screen" class="hidden">
   <h2>🏥 准备丹药</h2>
   <p style="color:#8a8a9e;margin-bottom:20px">选择携带进入秘境的丹药（总量上限5瓶）</p>
@@ -124,6 +215,7 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
   <button class="btn" onclick="enterDungeon()">进入幽冥谷</button>
 </div>
 
+<!-- 战斗 -->
 <div id="battle-screen" class="hidden">
   <div id="progress-bar"></div>
   <div id="enemy-area">
@@ -168,46 +260,77 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
 <div id="end-screen" class="hidden">
   <h2 id="end-title"></h2>
   <div class="result-text" id="end-desc"></div>
+  <div class="reward-text" id="end-reward"></div>
   <div class="deck-list" id="end-deck"></div>
-  <button class="btn" onclick="location.reload()">再来一次</button>
+  <button class="btn" onclick="backToHub()">返回洞府</button>
 </div>
 
 <script>
-const EL_C={fire:'card-fire',wood:'card-wood',earth:'card-earth',water:'card-water',none:'card-none'};
-const EL_N={fire:'火',wood:'木',earth:'土',water:'水',none:'无'};
+// ===== 常量 =====
+const EL_C={fire:'card-fire',wood:'card-wood',earth:'card-earth',water:'card-water',metal:'card-metal',none:'card-none'};
+const EL_N={fire:'火',wood:'木',earth:'土',water:'水',metal:'金',none:'无'};
+const EL_EMOJI={fire:'🔥',wood:'🌿',earth:'⛰️',water:'💧',metal:'⚔️'};
+const LG_CN={fire:'火灵根',wood:'木灵根',earth:'土灵根',water:'水灵根',metal:'金灵根'};
+const LG_CSS={fire:'lg-fire',wood:'lg-wood',earth:'lg-earth',water:'lg-water',metal:'lg-metal'};
+const REALM_NAMES=['炼气1层','炼气2层','炼气3层','炼气4层','炼气5层','炼气6层','炼气7层','炼气8层','炼气9层','筑基初期','筑基中期','筑基后期','金丹初期','金丹中期','金丹后期'];
+const REALM_XP=[0,100,200,350,500,700,1000,1400,1900,2500,3200,4000,5000,6200,7500];
+
+// 丹方
+const PILL_RECIPES=[
+  {id:'hp5',name:'小回春丹',desc:'永久 maxHp+5',cost:2,effect:{maxHp:5}},
+  {id:'sp1',name:'凝气丹',desc:'每场战斗灵力+1',cost:3,effect:{sp:1}},
+  {id:'blk3',name:'铁壁丹',desc:'每场战斗初始格挡+3',cost:2,effect:{block:3}},
+  {id:'psn2',name:'淬毒丹',desc:'中毒牌+2中毒',cost:3,effect:{poison:2}},
+  {id:'brn2',name:'烈焰丹',desc:'灼烧牌+2灼烧',cost:3,effect:{burn:2}},
+  {id:'cln',name:'洗髓丹',desc:'下次历练可移除1张起始牌',cost:5,effect:{removeCard:1}},
+];
+// 器方
+const ARTIFACT_RECIPES=[
+  {id:'sword',name:'玄铁剑',desc:'攻击牌+3伤害',cost:2,effect:{atkDmg:3}},
+  {id:'bead',name:'木灵珠',desc:'每场战斗后回复3HP',cost:2,effect:{healAfter:3}},
+  {id:'jade',name:'聚灵佩',desc:'首回合多抽1张',cost:3,effect:{draw1:1}},
+  {id:'armor',name:'金丝甲',desc:'受到伤害-2',cost:3,effect:{dmgReduce:2}},
+  {id:'ring',name:'灵犀戒',desc:'显示敌人下回合意图',cost:4,effect:{seeNext:1}},
+];
+
+// ===== 卡牌系统 =====
 let uid=0;
 function mk(name,type,cost,fx,ex={}){return{id:uid++,name,type,cost,dmg:fx.dmg||0,blk:fx.blk||0,burn:fx.burn||0,poison:fx.poison||0,draw:fx.draw||0,heal:fx.heal||0,el:ex.el||'none',desc:ex.desc||'',spFire:fx.spFire||0,blkPerFire:fx.blkPerFire||0,nextAtk:fx.nextAtk||0,upgraded:false,origName:name}}
 
 function initDeck(){
   let d=[];
+  let lg=char.linggen;
   for(let i=0;i<4;i++) d.push(mk('火鸦','atk',1,{dmg:6},{el:'fire',desc:'造成6伤害'}));
   for(let i=0;i<3;i++) d.push(mk('灵草护体','def',1,{blk:5},{el:'wood',desc:'获得5格挡'}));
   for(let i=0;i<2;i++) d.push(mk('丹火引燃','skill',0,{draw:1,spFire:1},{el:'fire',desc:'抽1张；手牌有火牌则+1灵力'}));
   d.push(mk('药炉感悟','skill',0,{blkPerFire:2},{el:'none',desc:'每打出1张火牌获得2格挡'}));
+  // 灵根加成
+  if(lg==='fire') d.push(mk('火鸦','atk',1,{dmg:6},{el:'fire',desc:'造成6伤害'}));
+  if(lg==='wood') d.push(mk('灵草护体','def',1,{blk:5},{el:'wood',desc:'获得5格挡'}));
+  if(lg==='metal'){d.push(mk('金刃符','atk',1,{dmg:7},{el:'metal',desc:'造成7伤害'}));}
   return d;
 }
 
-// ALL bonus cards pool - expanded
 const POOL=[
-  // white
   ()=>mk('火蛇符','atk',1,{dmg:4,burn:2},{el:'fire',desc:'4伤害+2灼烧'}),
   ()=>mk('土刺符','atk',1,{dmg:8},{el:'earth',desc:'造成8伤害'}),
   ()=>mk('木藤符','atk',1,{dmg:4,blk:4},{el:'wood',desc:'4伤害+4格挡'}),
   ()=>mk('灵盾符','def',1,{blk:8},{el:'earth',desc:'获得8格挡'}),
   ()=>mk('淬火术','skill',0,{nextAtk:4},{el:'fire',desc:'下张攻击+4伤害'}),
   ()=>mk('灵气运转','skill',0,{draw:1},{el:'none',desc:'抽2张牌，弃1张牌'}),
-  // green
   ()=>mk('三昧真火','atk',2,{dmg:14,burn:3},{el:'fire',desc:'14伤害+3灼烧'}),
   ()=>mk('丹火淬体','def',1,{blk:6,nextAtk:4},{el:'fire',desc:'6格挡+下次攻击+4'}),
   ()=>mk('炼丹手记','skill',1,{draw:3},{el:'none',desc:'抽3张牌'}),
   ()=>mk('火鸦变','skill',1,{},{el:'fire',desc:'所有火鸦本局+3伤害'}),
   ()=>mk('毒雾符','atk',1,{dmg:2,poison:3},{el:'wood',desc:'2伤害+3中毒'}),
   ()=>mk('以毒攻毒','atk',1,{},{el:'wood',desc:'造成中毒层数伤害(上限15)'}),
-  // blue
   ()=>mk('炼狱火海','atk',3,{dmg:12,burn:4},{el:'fire',desc:'AOE 12伤害+4灼烧'}),
   ()=>mk('丹意凝形','skill',1,{},{el:'fire',desc:'被动:每打出火牌+1攻击/层'}),
   ()=>mk('噬魂毒','atk',2,{poison:5},{el:'wood',desc:'5中毒+每层额外+1'}),
   ()=>mk('百草护元','def',2,{blk:15},{el:'wood',desc:'15格挡+每回合3格挡'}),
+  ()=>mk('金光咒','atk',1,{dmg:9},{el:'metal',desc:'造成9伤害'}),
+  ()=>mk('寒冰符','def',1,{blk:6},{el:'water',desc:'获得6格挡'}),
+  ()=>mk('水波术','atk',1,{dmg:5,draw:1},{el:'water',desc:'5伤害+抽1张'}),
 ];
 
 const DRUGS=[
@@ -216,10 +339,8 @@ const DRUGS=[
   {name:'护脉丹',desc:'获得10格挡',max:2,blk:10},
 ];
 
-// Dungeon map - 12 nodes: 7 normal, 2 elite, 2 rest, 1 boss
-const MAP=['F','F','R','F','F','E','F','R','F','E','F','B']; // F=fight, E=elite, R=rest, B=boss
+const MAP=['F','F','R','F','F','E','F','R','F','E','F','B'];
 
-// Enemy pools
 const NORMAL_ENEMIES=[
   {name:'野狼妖',spr:'🐺',hp:[26,34],intents:[{n:'撕咬',ic:'⚔️',d:11},{n:'撕咬',ic:'⚔️',d:11},{n:'凶猛撕咬',ic:'⚔️',d:18}]},
   {name:'青蛇妖',spr:'🐍',hp:[24,32],intents:[{n:'噬咬',ic:'⚔️',d:10},{n:'噬咬',ic:'⚔️',d:10},{n:'蜕皮',ic:'🛡️',d:0,blk:8},{n:'猛咬',ic:'⚔️',d:19}]},
@@ -227,38 +348,236 @@ const NORMAL_ENEMIES=[
   {name:'蝠群',spr:'🦇',spr2:'🦇',hp:[14,18],hp2:[14,18],intents:[{n:'啄击',ic:'⚔️',d:7},{n:'啄击',ic:'⚔️',d:7},{n:'群袭',ic:'⚔️',d:12}]},
   {name:'毒蟾',spr:'🐸',hp:[28,36],intents:[{n:'喷毒',ic:'⚔️',d:8},{n:'舌击',ic:'⚔️',d:14},{n:'喷毒',ic:'⚔️',d:8},{n:'猛撞',ic:'⚔️',d:18}]},
 ];
-
 const ELITE_ENEMIES=[
   {name:'嗜血野猪妖',spr:'🐗',hp:[50,62],intents:[{n:'獠牙冲撞',ic:'⚔️',d:14},{n:'獠牙冲撞',ic:'⚔️',d:14},{n:'蓄力',ic:'🛡️',d:0,blk:14},{n:'狂暴冲撞',ic:'⚔️',d:22}],enrageBelow:25,enrageBonus:6},
   {name:'幽冥蛛后',spr:'🕸️',hp:[55,68],intents:[{n:'毒液',ic:'⚔️',d:10},{n:'毒液',ic:'⚔️',d:10},{n:'猛毒',ic:'⚔️',d:17},{n:'产卵',ic:'😈',d:0}]},
 ];
-
 const BOSS={name:'巨蝠妖',spr:'🦇',hp:[70,82],intents:[{n:'音波',ic:'⚔️',d:11},{n:'吸血',ic:'🧛',d:15,lsteal:.5},{n:'音波',ic:'⚔️',d:17}],
   rageIntents:[{n:'狂乱撕咬',ic:'⚔️',d:19},{n:'狂乱撕咬',ic:'⚔️',d:19},{n:'暴怒蓄力',ic:'💪',d:0},{n:'终极俯冲',ic:'💥',d:34}],rageAt:30};
 
-// State
+// ===== 角色持久化 =====
+let char;
+function defaultChar(){
+  let elements=['fire','wood','earth','water','metal'];
+  return{
+    linggen:elements[rand(0,4)],
+    realm:0,
+    xiuwei:0,
+    lingcao:3,
+    kuangshi:2,
+    equippedPills:[],
+    equippedArtifacts:[],
+    ownedPills:[],
+    ownedArtifacts:[],
+  };
+}
+function loadChar(){
+  try{let s=localStorage.getItem('xianxia_save');if(s){char=JSON.parse(s);return}}catch(e){}
+  char=defaultChar();
+  saveChar();
+}
+function saveChar(){localStorage.setItem('xianxia_save',JSON.stringify(char))}
+function resetChar(){char=defaultChar();saveChar();renderHub()}
+
+// ===== 战斗状态 =====
 let G={deck:[],hand:[],discard:[],exhaust:[],
   hp:40,maxHp:40,sp:3,maxSp:3,blk:0,nextAtk:0,firePlayed:0,drugUsed:false,
   ehp:0,eMaxHp:0,eblk:0,eburn:0,epoison:0,
-  ehp2:0,eMaxHp2:0,eblk2:0, // second enemy for 蝠群
+  ehp2:0,eMaxHp2:0,eblk2:0,
   eIdx:0,intIdx:0,turn:0,inBattle:false,
   drugs:{},nodeIdx:0,
-  fireCrowBonus:0, // from 火鸦变
-  danYiStacks:0, // from 丹意凝形
-  baicaoPerTurn:0, // from 百草护元
-  playHist:{},
-  killedElite:0};
+  fireCrowBonus:0,danYiStacks:0,baicaoPerTurn:0,playHist:{},killedElite:0,
+  runLingcao:0,runKuangshi:0};
 
+// ===== 工具 =====
 function $(id){return document.getElementById(id)}
-function show(id){['title-screen','drug-screen','battle-screen','card-select-screen','rest-screen','end-screen'].forEach(s=>$(s).classList.add('hidden'));$(id).classList.remove('hidden')}
+const ALL_SCREENS=['hub-screen','drug-screen','battle-screen','card-select-screen','rest-screen','end-screen'];
+function show(id){ALL_SCREENS.forEach(s=>$(s).classList.add('hidden'));$(id).classList.remove('hidden')}
+function showModal(id){$(id).classList.remove('hidden')}
+function closeModal(id){$(id).classList.add('hidden')}
 function log(m,c='log-info'){$('log-area').innerHTML+=`<div class="${c}">${m}</div>`;$('log-area').scrollTop=$('log-area').scrollHeight}
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){let j=rand(0,i);[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+function getRealmName(){return REALM_NAMES[char.realm]||'渡劫'}
+function getNextXp(){return REALM_XP[char.realm+1]||99999}
 
-function startGame(){show('drug-screen');G.drugs={};DRUGS.forEach((_,i)=>G.drugs[i]=0);renderDrugSel()}
+// ===== 主界面 =====
+function renderHub(){
+  let lg=char.linggen;
+  $('hub-char-info').innerHTML=`
+    <div class="linggen-badge ${LG_CSS[lg]}">${EL_EMOJI[lg]} ${LG_CN[lg]}</div>
+    <div class="realm">${getRealmName()}</div>
+    <div class="xiuwei-bar"><div class="xiuwei-fill" style="width:${Math.min(100,char.xiuwei/getNextXp()*100)}%"></div></div>
+    <div class="xiuwei-text">修为 ${char.xiuwei} / ${getNextXp()}</div>`;
+  $('hub-materials').innerHTML=`
+    <span>🌿 灵草 ${char.lingcao}</span>
+    <span>⛏️ 矿石 ${char.kuangshi}</span>`;
+}
+
+// ===== 修炼系统 =====
+function showCultivate(){
+  renderCultivate();
+  showModal('cultivate-modal');
+}
+function renderCultivate(){
+  let canBreak=char.xiuwei>=getNextXp()&&char.realm<REALM_NAMES.length-1;
+  $('cultivate-info').innerHTML=`
+    <div class="realm">${getRealmName()}</div>
+    <div class="xiuwei-bar"><div class="xiuwei-fill" style="width:${Math.min(100,char.xiuwei/getNextXp()*100)}%"></div></div>
+    <div class="xiuwei-text">修为 ${char.xiuwei} / ${getNextXp()}</div>`;
+  $('cultivate-area').innerHTML=`
+    <button class="cultivate-btn" onclick="doCultivate()">🧘<br><span style="font-size:12px">打坐</span></button>
+    ${canBreak?'<button class="breakthrough-btn" onclick="doBreakthrough()">✨ 突破境界 ✨</button>':''}
+    <div style="color:#6a6a7e;font-size:13px">每次打坐获得10~30修为</div>`;
+}
+function doCultivate(){
+  let gain=rand(10,30);
+  char.xiuwei+=gain;
+  saveChar();
+  renderCultivate();
+}
+function doBreakthrough(){
+  if(char.xiuwei<getNextXp()||char.realm>=REALM_NAMES.length-1)return;
+  char.xiuwei-=getNextXp();
+  char.realm++;
+  saveChar();
+  renderCultivate();
+  renderHub();
+}
+
+// ===== 炼丹系统 =====
+function showAlchemy(){
+  renderAlchemy();
+  showModal('alchemy-modal');
+}
+function renderAlchemy(){
+  $('alchemy-herbs').textContent=char.lingcao;
+  let html='';
+  PILL_RECIPES.forEach(r=>{
+    let can=char.lingcao>=r.cost;
+    html+=`<div class="recipe-card${can?'':' disabled'}" onclick="${can?`craftPill('${r.id}')`:''}">
+      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">🌿×${r.cost}</div></div>`;
+  });
+  $('alchemy-recipes').innerHTML=html;
+  renderPillSlots();
+}
+function craftPill(id){
+  let r=PILL_RECIPES.find(p=>p.id===id);
+  if(!r||char.lingcao<r.cost)return;
+  char.lingcao-=r.cost;
+  char.ownedPills.push({...r.effect,_name:r.name,_id:r.id});
+  saveChar();renderAlchemy();renderHub();
+}
+function renderPillSlots(){
+  let html='<h3>已装备丹药 ('+char.equippedPills.length+'/3)</h3><div class="eq-slots">';
+  char.equippedPills.forEach((p,i)=>{
+    html+=`<div class="eq-slot" onclick="unequipPill(${i})"><span class="eq-name">${p._name}</span><span class="eq-unequip">卸下</span></div>`;
+  });
+  html+='</div>';
+  // 未装备
+  let unequipped=char.ownedPills.filter(p=>!char.equippedPills.includes(p));
+  if(unequipped.length>0){
+    html+='<h3 style="margin-top:12px">未装备</h3><div>';
+    unequipped.forEach((p,i)=>{
+      let idx=char.ownedPills.indexOf(p);
+      html+=`<div class="inv-item" onclick="equipPill(${idx})">${p._name}</div>`;
+    });
+    html+='</div>';
+  }
+  $('alchemy-equipped').innerHTML=html;
+}
+function equipPill(idx){
+  if(char.equippedPills.length>=3)return;
+  let p=char.ownedPills[idx];
+  if(!p||char.equippedPills.includes(p))return;
+  char.equippedPills.push(p);
+  saveChar();renderAlchemy();
+}
+function unequipPill(i){
+  char.equippedPills.splice(i,1);
+  saveChar();renderAlchemy();
+}
+
+// ===== 炼器系统 =====
+function showRefine(){
+  renderRefine();
+  showModal('refine-modal');
+}
+function renderRefine(){
+  $('refine-ores').textContent=char.kuangshi;
+  let html='';
+  ARTIFACT_RECIPES.forEach(r=>{
+    let can=char.kuangshi>=r.cost;
+    html+=`<div class="recipe-card${can?'':' disabled'}" onclick="${can?`craftArtifact('${r.id}')`:''}">
+      <div class="rc-name">${r.name}</div><div class="rc-desc">${r.desc}</div><div class="rc-cost">⛏️×${r.cost}</div></div>`;
+  });
+  $('refine-recipes').innerHTML=html;
+  renderArtifactSlots();
+}
+function craftArtifact(id){
+  let r=ARTIFACT_RECIPES.find(a=>a.id===id);
+  if(!r||char.kuangshi<r.cost)return;
+  char.kuangshi-=r.cost;
+  char.ownedArtifacts.push({...r.effect,_name:r.name,_id:r.id});
+  saveChar();renderRefine();renderHub();
+}
+function renderArtifactSlots(){
+  let html='<h3>已装备法器 ('+char.equippedArtifacts.length+'/2)</h3><div class="eq-slots">';
+  char.equippedArtifacts.forEach((a,i)=>{
+    html+=`<div class="eq-slot" onclick="unequipArtifact(${i})"><span class="eq-name">${a._name}</span><span class="eq-unequip">卸下</span></div>`;
+  });
+  html+='</div>';
+  let unequipped=char.ownedArtifacts.filter(a=>!char.equippedArtifacts.includes(a));
+  if(unequipped.length>0){
+    html+='<h3 style="margin-top:12px">未装备</h3><div>';
+    unequipped.forEach((a)=>{
+      let idx=char.ownedArtifacts.indexOf(a);
+      html+=`<div class="inv-item" onclick="equipArtifact(${idx})">${a._name}</div>`;
+    });
+    html+='</div>';
+  }
+  $('refine-equipped').innerHTML=html;
+}
+function equipArtifact(idx){
+  if(char.equippedArtifacts.length>=2)return;
+  let a=char.ownedArtifacts[idx];
+  if(!a||char.equippedArtifacts.includes(a))return;
+  char.equippedArtifacts.push(a);
+  saveChar();renderRefine();
+}
+function unequipArtifact(i){
+  char.equippedArtifacts.splice(i,1);
+  saveChar();renderRefine();
+}
+
+// ===== 背包 =====
+function showInventory(){
+  let html='<div class="hub-materials" style="margin-bottom:20px"><span>🌿 灵草 '+char.lingcao+'</span><span>⛏️ 矿石 '+char.kuangshi+'</span></div>';
+  html+='<h3>丹药效果</h3><div style="margin-bottom:15px">';
+  char.equippedPills.forEach(p=>{html+=`<div style="color:#d4a574;font-size:14px;margin:4px 0">💊 ${p._name}</div>`});
+  if(!char.equippedPills.length) html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
+  html+='</div><h3>法器效果</h3><div style="margin-bottom:15px">';
+  char.equippedArtifacts.forEach(a=>{html+=`<div style="color:#d4a574;font-size:14px;margin:4px 0">🔮 ${a._name}</div>`});
+  if(!char.equippedArtifacts.length) html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
+  html+='</div><h3>灵根加成</h3><div style="color:#8a8a9e;font-size:13px">';
+  let lg=char.linggen;
+  if(lg==='fire') html+='🔥 攻击牌+1伤害，多1张火鸦';
+  if(lg==='wood') html+='🌿 多1张灵草护体';
+  if(lg==='earth') html+='⛰️ 开局+3格挡，格挡牌+2';
+  if(lg==='water') html+='💧 初始灵力4，首回合多抽1张';
+  if(lg==='metal') html+='⚔️ 10%暴击，多1张金刃符';
+  html+='</div>';
+  html+='<button class="btn btn-sm" style="margin-top:20px;color:#e74c3c;border-color:#e74c3c" onclick="if(confirm(\'确定重置存档？\')){resetChar();closeModal(\'inventory-modal\')}">🗑️ 重置存档</button>';
+  $('inv-content').innerHTML=html;
+  showModal('inventory-modal');
+}
+
+// ===== 进入地牢流程 =====
+function enterDungeonFlow(){
+  show('drug-screen');G.drugs={};DRUGS.forEach((_,i)=>G.drugs[i]=0);renderDrugSel();
+}
 function renderDrugSel(){
   let ds=$('drug-select');ds.innerHTML='';
-  let total=Object.values(G.drugs).reduce((a,b)=>a+b,0);
   DRUGS.forEach((d,i)=>{
     let cnt=G.drugs[i]||0;
     let el=document.createElement('div');el.className='drug-item';
@@ -269,7 +588,22 @@ function renderDrugSel(){
 window.adjDrug=function(i,d){let d2=DRUGS[i],total=Object.values(G.drugs).reduce((a,b)=>a+b,0);let nv=(G.drugs[i]||0)+d;if(nv<0||nv>d2.max)return;if(d>0&&total>=5)return;G.drugs[i]=nv;renderDrugSel()};
 
 function enterDungeon(){
-  G.deck=initDeck();G.hp=G.maxHp;G.nodeIdx=0;G.fireCrowBonus=0;G.danYiStacks=0;G.baicaoPerTurn=0;G.killedElite=0;
+  G.deck=initDeck();G.nodeIdx=0;G.fireCrowBonus=0;G.danYiStacks=0;G.baicaoPerTurn=0;G.killedElite=0;
+  G.runLingcao=0;G.runKuangshi=0;
+  // 应用境界加成
+  let realmBonus=char.realm;
+  G.maxHp=40+realmBonus*5;
+  G.maxSp=3+(realmBonus>=3?1:0)+(realmBonus>=6?1:0);
+  // 应用丹药加成
+  char.equippedPills.forEach(p=>{
+    if(p.maxHp) G.maxHp+=p.maxHp;
+    if(p.sp) G.maxSp+=p.sp;
+  });
+  G.hp=G.maxHp;G.sp=G.maxSp;G.blk=0;
+  // 初始格挡加成
+  char.equippedPills.forEach(p=>{if(p.block) G.blk+=p.block});
+  // 土灵根加成
+  if(char.linggen==='earth') G.blk+=3;
   nextNode();
 }
 
@@ -302,7 +636,6 @@ function startFight(isElite){
   show('battle-screen');
   let template=isElite?pickEnemy(ELITE_ENEMIES):pickEnemy(NORMAL_ENEMIES);
   let hp=rand(template.hp[0],template.hp[1]);
-  // scale with node progress
   let scale=1+G.nodeIdx*0.04;
   hp=Math.round(hp*scale);
   initEnemy(template,hp);
@@ -329,7 +662,6 @@ function startBoss(){
 function initEnemy(t,hp){
   G.ehp=hp;G.eMaxHp=hp;G.eblk=0;G.eburn=0;G.epoison=0;
   G.ename=t.name;G.espr=t.spr;G.etemplate=t;
-  // second enemy (蝠群)
   if(t.hp2){G.ehp2=rand(t.hp2[0],t.hp2[1]);G.eMaxHp2=G.ehp2;G.eblk2=0}
   else{G.ehp2=0;G.eMaxHp2=0;G.eblk2=0}
   $('enemy-name').textContent=t.name+(G.ehp2>0?` + 小蝠`:'');
@@ -344,7 +676,16 @@ function shuffleIntoDeck(){
 function startTurn(){
   G.turn++;G.sp=G.maxSp;G.blk=0;G.firePlayed=0;G.drugUsed=false;G.playHist={};
   if(G.baicaoPerTurn>0) G.blk+=G.baicaoPerTurn;
-  for(let i=0;i<5;i++) drawCard();
+  // 土灵根加成
+  if(char.linggen==='earth') G.blk+=3;
+  // 丹药初始格挡
+  char.equippedPills.forEach(p=>{if(p.block) G.blk+=p.block});
+  let drawCount=5;
+  // 水灵根首回合多抽
+  if(G.turn===1&&char.linggen==='water') drawCount++;
+  // 聚灵佩首回合多抽
+  if(G.turn===1&&char.equippedArtifacts.some(a=>a.draw1)) drawCount++;
+  for(let i=0;i<drawCount;i++) drawCard();
   showIntent();
   log(`—— 第${G.turn}回合 ——`,'log-info');
   updateUI();
@@ -359,7 +700,14 @@ function showIntent(){
   let t=G.etemplate;
   let intents=t.rageIntents&&G.ehp<t.rageAt?t.rageIntents:t.intents;
   let intent=intents[G.intIdx%intents.length];
-  $('enemy-intent').innerHTML=`<span>${intent.ic}</span> ${intent.n} ${intent.d?`<span style="color:#e74c3c">${intent.d}${t.enrageBelow&&G.ehp<t.enrageBelow?'+'+t.enrageBonus:''}伤害</span>`:''}${intent.blk?`<span style="color:#95a5a6">+${intent.blk}格挡</span>`:''}`;
+  let html=`<span>${intent.ic}</span> ${intent.n} ${intent.d?`<span style="color:#e74c3c">${intent.d}${t.enrageBelow&&G.ehp<t.enrageBelow?'+'+t.enrageBonus:''}伤害</span>`:''}${intent.blk?`<span style="color:#95a5a6">+${intent.blk}格挡</span>`:''}`;
+  // 灵犀戒显示下回合意图
+  if(char.equippedArtifacts.some(a=>a.seeNext)){
+    let nextIdx=(G.intIdx+1)%intents.length;
+    let ni=intents[nextIdx];
+    html+=` <span style="color:#9b59b6;font-size:12px">(下回合:${ni.n}${ni.d?' '+ni.d:'')}${ni.blk?' +🛡️'+ni.blk:''})</span>`;
+  }
+  $('enemy-intent').innerHTML=html;
 }
 
 function updateUI(){
@@ -386,13 +734,12 @@ function renderHand(){
   G.hand.forEach((c,i)=>{
     let can=G.sp>=c.cost&&G.inBattle;
     let el=document.createElement('div');
-    el.className=`card ${EL_C[c.el]}${can?'':' disabled'}`;
+    el.className=`card ${EL_C[c.el]||'card-none'}${can?'':' disabled'}`;
     let desc=c.desc;
     if(c.name==='火鸦'&&G.fireCrowBonus>0) desc=`造成${6+G.fireCrowBonus}伤害`;
-    el.innerHTML=`<div class="cost">${c.cost}</div><div class="card-name">${c.name}${c.upgraded?' ★':''}</div><div class="card-desc">${desc}</div><div class="card-type">${c.type==='atk'?'符箓':c.type==='def'?'防御':'功法'}·${EL_N[c.el]}</div>`;
-      if(can){
+    el.innerHTML=`<div class="cost">${c.cost}</div><div class="card-name">${c.name}${c.upgraded?' ★':''}</div><div class="card-desc">${desc}</div><div class="card-type">${c.type==='atk'?'符箓':c.type==='def'?'防御':'功法'}·${EL_N[c.el]||'?'}</div>`;
+    if(can){
       if(G.ehp2>0){
-        // two enemies: choose target
         el.onclick=()=>{G.target=i<=1?1:0;playCardWithTarget(i)};
       } else {
         el.onclick=()=>playCard(i);
@@ -416,9 +763,7 @@ function renderDrugs(){
 
 function playCard(idx){_playCard(idx,1)}
 function playCardWithTarget(idx){
-  // show target selection
   let ha=$('hand-area');
-  // add target buttons on enemies
   let ta=document.createElement('div');
   ta.style.cssText='position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:99';
   ta.innerHTML=`<button class="btn btn-sm" onclick="_playCard(${idx},1)" style="font-size:12px;padding:5px 15px">打 ${G.ename}</button>`;
@@ -436,59 +781,67 @@ function _playCard(idx,target){
   G.playHist[c.name]=(G.playHist[c.name]||0)+1;
   if(G.playHist[c.name]>=2){showCombo(G.playHist[c.name])}
 
-  // fire鸦变 check
   if(c.name==='火鸦变'){G.fireCrowBonus+=3;log(`🔥 火鸦变！所有火鸦+3伤害`,'log-combo')}
-  // 丹意凝形
-  if(c.name==='丹意凝形'){G.danYiStacks++;log(`丹意+1层（当前${G.danYiStacks}层，每层+1攻击）`,'log-info')}
-  // 百草护元
+  if(c.name==='丹意凝形'){G.danYiStacks++;log(`丹意+1层（当前${G.danYiStacks}层）`,'log-info')}
   if(c.name==='百草护元'){G.baicaoPerTurn+=3;log(`百草护元！每回合+3格挡`,'log-block')}
-  // 灵气运转 special: draw 2 discard 1
   if(c.name==='灵气运转'){drawCard();drawCard();if(G.hand.length>0){G.discard.push(G.hand.pop())}log(`灵气运转：抽2弃1`,'log-info');G.discard.push(c);updateUI();return}
-  // 淬火术
   if(c.nextAtk>0){G.nextAtk+=c.nextAtk;log(`打出【${c.name}】→ 下次攻击+${c.nextAtk}`,'log-info');G.discard.push(c);updateUI();return}
 
   let totalDmg=0;
-  // damage
   if(c.dmg>0||c.name==='以毒攻毒'){
     if(c.name==='以毒攻毒'){totalDmg=Math.min(G.epoison,15)}
-    else{totalDmg=c.dmg+(c.name==='火鸦'?G.fireCrowBonus:0)+G.nextAtk+G.danYiStacks;G.nextAtk=0}
-    // apply to target
+    else{
+      totalDmg=c.dmg+(c.name==='火鸦'?G.fireCrowBonus:0)+G.nextAtk+G.danYiStacks;
+      // 火灵根加成
+      if(char.linggen==='fire'&&c.type==='atk') totalDmg+=1;
+      // 玄铁剑加成
+      char.equippedArtifacts.forEach(a=>{if(a.atkDmg&&c.type==='atk') totalDmg+=a.atkDmg});
+      // 烈焰丹加成
+      char.equippedPills.forEach(p=>{if(p.burn&&c.burn>0) totalDmg+=0}); // burn bonus applied below
+      G.nextAtk=0;
+    }
+    // 金灵根暴击
+    if(char.linggen==='metal'&&Math.random()<0.1){totalDmg*=2;log('💥 暴击！','log-combo')}
     let tBlk=target===2?G.eblk2:G.eblk;
-    let tHp=target===2?'ehp2':'ehp';
     let blocked=Math.min(tBlk,totalDmg);
     let actual=totalDmg-blocked;
     if(target===2){G.eblk2-=blocked;G.ehp2-=actual}else{G.eblk-=blocked;G.ehp-=actual}
     let tName=target===2?'小蝠':G.ename;
     log(`打出【${c.name}】→ ${tName} ${totalDmg}伤害${blocked>0?'(挡'+blocked+')':''}`,'log-damage');
     let es=$('enemy-sprite');es.classList.add('hurt');setTimeout(()=>es.classList.remove('hurt'),200);
-    // combo bonus
     if(c.name==='火鸦'&&G.playHist[c.name]>=2){let eb=G.playHist[c.name]>=3?2:1;G.eburn+=eb;log(`🔥火鸦连击！+${eb}灼烧`,'log-combo')}
-    // AOE hits both
     if(c.name==='炼狱火海'){
       let other=target===1?2:1;
       let oHp=other===1?G.ehp:G.ehp2;
       if(oHp>0){if(other===1)G.ehp-=totalDmg;else G.ehp2-=totalDmg;log(`炼狱火海波及${other===1?G.ename:'小蝠'}→${totalDmg}伤害`,'log-damage')}
     }
   }
-  // block
-  if(c.blk>0){G.blk+=c.blk;log(`打出【${c.name}】→ +${c.blk}格挡`,'log-block')}
-  // burn
-  if(c.burn>0){G.eburn+=c.burn;log(`🔥 +${c.burn}灼烧`,'log-burn')}
-  // poison
-  if(c.poison>0){G.epoison+=c.poison;log(`☠️ +${c.poison}中毒`,'log-burn')}
-  // draw
+  if(c.blk>0){
+    let blkAmt=c.blk;
+    // 土灵根加成
+    if(char.linggen==='earth') blkAmt+=2;
+    G.blk+=blkAmt;log(`打出【${c.name}】→ +${blkAmt}格挡`,'log-block');
+  }
+  if(c.burn>0){
+    let burnAmt=c.burn;
+    char.equippedPills.forEach(p=>{if(p.burn) burnAmt+=p.burn});
+    G.eburn+=burnAmt;log(`🔥 +${burnAmt}灼烧`,'log-burn');
+  }
+  if(c.poison>0){
+    let psnAmt=c.poison;
+    char.equippedPills.forEach(p=>{if(p.poison) psnAmt+=p.poison});
+    G.epoison+=psnAmt;log(`☠️ +${psnAmt}中毒`,'log-burn');
+  }
   if(c.draw>0){for(let i=0;i<c.draw;i++)drawCard();log(`打出【${c.name}】→ 抽${c.draw}张`,'log-info')}
-  // heal
-  if(c.heal>0){G.hp=Math.min(G.maxHp,G.hp+c.heal);log(`💚 回复${c.heal}生命`,'log-heal')}
-  // spirit if fire
+  if(c.heal>0){
+    let healAmt=c.heal;
+    if(char.linggen==='wood') healAmt+=2;
+    G.hp=Math.min(G.maxHp,G.hp+healAmt);log(`💚 回复${healAmt}生命`,'log-heal');
+  }
   if(c.spFire>0){let has=G.hand.some(h=>h.el==='fire');if(has){G.sp++;log(`打出【${c.name}】→ 火牌在手+1灵力`,'log-info')};drawCard()}
-  // block per fire
   if(c.blkPerFire>0){let b=G.firePlayed*c.blkPerFire;G.blk+=b;log(`打出【${c.name}】→ ${G.firePlayed}张火牌→${b}格挡`,'log-block')}
 
   G.discard.push(c);
-
-  // check both enemies dead
-  // if main dead but second alive, merge
   if(G.ehp<=0&&G.ehp2>0){
     G.ehp=G.ehp2;G.eMaxHp=G.eMaxHp2;G.eblk=G.eblk2;
     G.ehp2=0;G.eMaxHp2=0;G.eblk2=0;
@@ -507,28 +860,25 @@ function showCombo(n){
 function endPlayerTurn(){
   if(!G.inBattle)return;
   G.discard.push(...G.hand);G.hand=[];G.playHist={};
-  // burn tick
   if(G.eburn>0){G.ehp-=G.eburn;log(`🔥灼烧 ${G.eburn}伤害`,'log-burn');G.eburn=Math.max(0,G.eburn-1)}
-  // enemy action
   let t=G.etemplate;
   let intents=t.rageIntents&&G.ehp<t.rageAt?t.rageIntents:t.intents;
   let intent=intents[G.intIdx%intents.length];
-  // 产卵 special: spawn second enemy
   if(intent.n==='产卵'&&G.ehp2<=0){G.ehp2=8;G.eMaxHp2=8;G.eblk2=0;log(`蛛后产卵！小蛛出现了(8HP)`,'log-info')}
   if(intent.d>0){
     let dmg=intent.d;
     if(t.enrageBelow&&G.ehp<t.enrageBelow) dmg+=t.enrageBonus;
+    // 金丝甲减伤
+    char.equippedArtifacts.forEach(a=>{if(a.dmgReduce) dmg=Math.max(0,dmg-a.dmgReduce)});
     let blocked=Math.min(G.blk,dmg);let actual=dmg-blocked;G.blk-=blocked;G.hp-=actual;
     log(`${G.ename}【${intent.n}】→ ${dmg}伤害${blocked>0?'(挡'+blocked+')':''}`,'log-damage');
     if(intent.lsteal){let s=Math.floor(actual*intent.lsteal);G.ehp=Math.min(G.eMaxHp,G.ehp+s);if(s>0)log(`🧛回复${s}生命`,'log-heal')}
-    // second enemy attacks
-    if(G.ehp2>0){let d2=rand(3,5);let b2=Math.min(G.blk,d2);G.hp-=(d2-b2);G.blk-=b2;log(`小蝠攻击→${d2}伤害${b2>0?'(挡'+b2+')':''}`,'log-damage')}
+    if(G.ehp2>0){let d2=rand(3,5);char.equippedArtifacts.forEach(a=>{if(a.dmgReduce) d2=Math.max(0,d2-a.dmgReduce)});let b2=Math.min(G.blk,d2);G.hp-=(d2-b2);G.blk-=b2;log(`小蝠攻击→${d2}伤害${b2>0?'(挡'+b2+')':''}`,'log-damage')}
   }
   if(intent.blk>0){G.eblk+=intent.blk;log(`${G.ename}获得${intent.blk}格挡`,'log-block')}
-  // poison tick
   if(G.epoison>0){G.ehp-=G.epoison;log(`☠️中毒 ${G.epoison}伤害`,'log-burn');G.epoison=Math.max(0,G.epoison-1)}
   G.intIdx++;
-  // check death
+  // 木灵珠战斗后回血不在回合结束，在战斗结束
   if(G.ehp<=0&&G.ehp2<=0){enemyDefeated();return}
   if(G.hp<=0){playerDefeated();return}
   startTurn();
@@ -538,10 +888,16 @@ function useDrug(i){
   if(G.drugUsed||!G.inBattle)return;
   let d=DRUGS[i];if(!G.drugs[i]||G.drugs[i]<=0)return;
   G.drugs[i]--;G.drugUsed=true;
-  if(d.heal){G.hp=Math.min(G.maxHp,G.hp+d.heal);log(`💊${d.name}→回复${d.heal}生命`,'log-heal')}
+  if(d.heal){let h=d.heal;if(char.linggen==='wood') h+=2;G.hp=Math.min(G.maxHp,G.hp+h);log(`💊${d.name}→回复${h}生命`,'log-heal')}
   if(d.nextAtk){G.nextAtk+=d.nextAtk;log(`💊${d.name}→攻击+${d.nextAtk}`,'log-info')}
   if(d.blk){G.blk+=d.blk;log(`💊${d.name}→+${d.blk}格挡`,'log-block')}
   updateUI();
+}
+
+function addMaterials(normal,elite,boss){
+  if(normal){G.runLingcao+=2}
+  if(elite){G.runLingcao+=3;G.runKuangshi+=2}
+  if(boss){G.runLingcao+=5;G.runKuangshi+=3}
 }
 
 function enemyDefeated(){
@@ -549,33 +905,46 @@ function enemyDefeated(){
   log(`—— ${G.ename} 被击败！——`,'log-combo');
   let isElite=MAP[G.nodeIdx]==='E';
   let isBoss=MAP[G.nodeIdx]==='B';
+  addMaterials(!isElite&&!isBoss,isElite,isBoss);
+  // 木灵珠回血
+  char.equippedArtifacts.forEach(a=>{if(a.healAfter){G.hp=Math.min(G.maxHp,G.hp+a.healAfter);log(`🔮 木灵珠回复${a.healAfter}生命`,'log-heal')}});
   G.nodeIdx++;
   if(isBoss){victory();return}
   updateUI();
-  setTimeout(()=>{
-    if(isElite){
-      // elite: better cards + remove option
-      showCardSelect(true);
-    } else {
-      showCardSelect(false);
-    }
-  },800);
+  setTimeout(()=>{showCardSelect(isElite)},800);
 }
 
 function playerDefeated(){
   G.inBattle=false;
-  setTimeout(()=>{show('end-screen');$('end-title').textContent='💀 魂归轮回';$('end-title').style.color='#e74c3c';$('end-desc').textContent=`倒在了${G.ename}面前…第${G.nodeIdx+1}/${MAP.length}层`;
-  $('end-deck').textContent='最终牌组：'+G.deck.map(c=>c.name).join(', ');
+  let isElite=MAP[G.nodeIdx]==='E';
+  addMaterials(true,isElite,false);
+  setTimeout(()=>{
+    show('end-screen');$('end-title').textContent='💀 魂归轮回';$('end-title').style.color='#e74c3c';
+    $('end-desc').textContent=`倒在了${G.ename}面前…第${G.nodeIdx+1}/${MAP.length}层`;
+    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi}`;
+    $('end-deck').textContent='最终牌组：'+G.deck.map(c=>c.name).join(', ');
   },800);
 }
 
 function victory(){
-  setTimeout(()=>{show('end-screen');$('end-title').textContent='🎉 通关幽冥谷！';$('end-title').style.color='#f1c40f';
-  $('end-desc').textContent=`剩余${G.hp}生命 | 共${G.turn}回合`;
-  let allCards=[...G.deck,...G.discard,...G.hand];
-  let cardNames={};allCards.forEach(c=>{cardNames[c.name]=(cardNames[c.name]||0)+1});
-  $('end-deck').textContent='最终牌组：'+Object.entries(cardNames).map(([n,c])=>`${n}×${c}`).join(', ');
+  setTimeout(()=>{
+    show('end-screen');$('end-title').textContent='🎉 通关幽冥谷！';$('end-title').style.color='#f1c40f';
+    $('end-desc').textContent=`剩余${G.hp}生命 | 共${G.turn}回合`;
+    $('end-reward').textContent=`获得：🌿 灵草×${G.runLingcao} ⛏️ 矿石×${G.runKuangshi}`;
+    let allCards=[...G.deck,...G.discard,...G.hand];
+    let cardNames={};allCards.forEach(c=>{cardNames[c.name]=(cardNames[c.name]||0)+1});
+    $('end-deck').textContent='最终牌组：'+Object.entries(cardNames).map(([n,c])=>`${n}×${c}`).join(', ');
   },800);
+}
+
+function backToHub(){
+  char.lingcao+=G.runLingcao;
+  char.kuangshi+=G.runKuangshi;
+  // 战斗修为奖励
+  char.xiuwei+=G.nodeIdx*20+G.turn*2;
+  saveChar();
+  renderHub();
+  show('hub-screen');
 }
 
 function showCardSelect(isElite){
@@ -583,7 +952,6 @@ function showCardSelect(isElite){
   let pool=[...POOL].sort(()=>Math.random()-.5).slice(0,count);
   let cs=$('card-choices');cs.innerHTML='';
   $('card-select-title').textContent=isElite?'💎 精英击败！选择卡牌（+可移除1张）':'✨ 选择一张卡牌';
-  // add remove button for elite
   if(isElite){
     let rb=document.createElement('button');rb.className='btn btn-sm';rb.textContent='🗑️ 移除1张牌';
     rb.style.cssText='color:#e74c3c;border-color:#e74c3c';
@@ -591,8 +959,8 @@ function showCardSelect(isElite){
   }
   pool.forEach(fn=>{
     let c=fn();
-    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]}`;
-    el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div><div style="font-size:10px;text-align:center;color:#5a5a6e;border-top:1px solid #3a3a4e;padding-top:4px">${EL_N[c.el]}属性</div>`;
+    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]||'card-none'}`;
+    el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div><div style="font-size:10px;text-align:center;color:#5a5a6e;border-top:1px solid #3a3a4e;padding-top:4px">${EL_N[c.el]||'?'}属性</div>`;
     el.onclick=()=>{G.deck.push(c);log(`获得：${c.name}`,'log-info');afterSelect()};
     cs.appendChild(el);
   });
@@ -604,14 +972,12 @@ function afterSelect(){G.nodeIdx++;nextNode()}
 
 function showRemoveCard(fromElite){
   let cs=$('card-choices');cs.innerHTML='';$('card-select-title').textContent='🗑️ 选择要移除的牌';
-  let allCards=[...G.deck,...G.discard];
-  let seen={};
-  allCards.forEach((c,i)=>{
+  let allCards=[...G.deck,...G.discard];let seen={};
+  allCards.forEach((c)=>{
     if(seen[c.name])return;seen[c.name]=true;
-    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]}`;
+    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]||'card-none'}`;
     el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div>`;
     el.onclick=()=>{
-      // remove first matching card
       let idx=G.deck.findIndex(x=>x.name===c.name);
       if(idx>=0)G.deck.splice(idx,1);else{idx=G.discard.findIndex(x=>x.name===c.name);if(idx>=0)G.discard.splice(idx,1)}
       log(`移除了：${c.name}`,'log-info');afterSelect();
@@ -620,19 +986,15 @@ function showRemoveCard(fromElite){
   });
 }
 
-// Rest screen
 function showRest(){show('rest-screen')}
-
 window.restHeal=function(){let h=Math.floor(G.maxHp*.3);G.hp=Math.min(G.maxHp,G.hp+h);log(`休息回复${h}生命`,'log-heal');G.nodeIdx++;nextNode()};
 window.restUpgrade=function(){
-  // show upgrade UI
   let rs=$('rest-screen');
   rs.innerHTML='<h2 style="color:#d4a574;font-size:24px;margin-bottom:30px">⬆️ 选择升级的卡牌</h2><div class="card-choices" id="upgrade-choices"></div><button class="btn btn-sm" onclick="skipUpgrade()" style="color:#8a8a9e;border-color:#5a5a6e;margin-top:20px">跳过</button>';
-  let uc=$('upgrade-choices');
-  let allCards=[...G.deck,...G.discard];let seen={};
+  let uc=$('upgrade-choices');let allCards=[...G.deck,...G.discard];let seen={};
   allCards.forEach(c=>{
     if(c.upgraded||seen[c.name])return;seen[c.name]=true;
-    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]}`;
+    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]||'card-none'}`;
     el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div>`;
     el.onclick=()=>{upgradeCard(c);G.nodeIdx++;nextNode()};
     uc.appendChild(el);
@@ -641,7 +1003,6 @@ window.restUpgrade=function(){
 
 function upgradeCard(c){
   c.upgraded=true;c.name=c.origName?c.origName+'★':c.name+'★';
-  // upgrade effects
   if(c.dmg>0) c.dmg=Math.ceil(c.dmg*1.5);
   if(c.blk>0) c.blk=Math.ceil(c.blk*1.5);
   if(c.burn>0) c.burn+=1;
@@ -653,15 +1014,13 @@ function upgradeCard(c){
 }
 
 window.skipUpgrade=function(){G.nodeIdx++;nextNode()};
-
 window.restRemove=function(){
   let rs=$('rest-screen');
   rs.innerHTML='<h2 style="color:#d4a574;font-size:24px;margin-bottom:30px">🗑️ 选择移除的牌</h2><div class="card-choices" id="remove-choices"></div><button class="btn btn-sm" onclick="skipRemove()" style="color:#8a8a9e;border-color:#5a5a6e;margin-top:20px">跳过</button>';
-  let rc=$('remove-choices');
-  let allCards=[...G.deck,...G.discard];let seen={};
+  let rc=$('remove-choices');let allCards=[...G.deck,...G.discard];let seen={};
   allCards.forEach(c=>{
     if(seen[c.name])return;seen[c.name]=true;
-    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]}`;
+    let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]||'card-none'}`;
     el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div>`;
     el.onclick=()=>{
       let idx=G.deck.findIndex(x=>x.name===c.name);
@@ -671,8 +1030,12 @@ window.restRemove=function(){
     rc.appendChild(el);
   });
 };
-
 window.skipRemove=function(){G.nodeIdx++;nextNode()};
+
+// ===== 初始化 =====
+loadChar();
+renderHub();
+show('hub-screen');
 </script>
 </body>
 </html>
