@@ -1,0 +1,138 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/battle_hud.gd" id="1_bh"]
+[ext_resource type="PackedScene" path="res://scenes/battle/card_view.tscn" id="2_cv"]
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bh")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.18, 1)
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 36.0
+
+[node name="ProgressContainer" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyArea" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 40.0
+offset_bottom = 200.0
+
+[node name="EnemyName" type="Label" parent="EnemyArea"]
+layout_mode = 2
+text = "野狼妖 🐺"
+horizontal_alignment = 1
+
+[node name="HPBar" type="ProgressBar" parent="EnemyArea"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HPText" type="Label" parent="EnemyArea"]
+layout_mode = 2
+text = "30/30"
+horizontal_alignment = 1
+
+[node name="IntentLabel" type="Label" parent="EnemyArea"]
+layout_mode = 2
+text = "⚔️ 11"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="EnemyArea"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+
+[node name="LogArea" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -160.0
+offset_left = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="LogText" type="RichTextLabel" parent="LogArea"]
+layout_mode = 2
+bbcode_enabled = true
+text = "战斗开始"
+fit_content = true
+scroll_following = true
+
+[node name="PlayerArea" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -200.0
+offset_bottom = -160.0
+
+[node name="HPBar" type="ProgressBar" parent="PlayerArea"]
+custom_minimum_size = Vector2(200, 16)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HPText" type="Label" parent="PlayerArea"]
+layout_mode = 2
+text = "50/50"
+
+[node name="SPLabel" type="Label" parent="PlayerArea"]
+layout_mode = 2
+text = "灵力: 3/3"
+
+[node name="BlockLabel" type="Label" parent="PlayerArea"]
+layout_mode = 2
+text = ""
+
+[node name="StatusLabel" type="Label" parent="PlayerArea"]
+layout_mode = 2
+text = ""
+
+[node name="EndTurnBtn" type="Button" parent="PlayerArea"]
+layout_mode = 2
+text = "结束回合"
+
+[node name="PillBtn" type="Button" parent="PlayerArea"]
+layout_mode = 2
+text = "💊 丹药"
+disabled = true
+
+[node name="HandArea" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -160.0
+offset_bottom = 0.0
+
+[node name="HandContainer" type="HBoxContainer" parent="HandArea"]
+layout_mode = 2
+size_flags_horizontal = 3

@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/card_view.gd" id="1_cv"]
+
+[node name="CardView" type="Control"]
+custom_minimum_size = Vector2(100, 140)
+offset_right = 100.0
+offset_bottom = 140.0
+script = ExtResource("1_cv")
+
+[node name="BG" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -24.0
+
+[node name="CostLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "灵力:0"
+horizontal_alignment = 1
+
+[node name="ElLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "🔥"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "卡牌名"
+horizontal_alignment = 1
+
+[node name="DescLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -48.0
+offset_top = -22.0
+offset_right = 48.0
+offset_bottom = -2.0
+text = "描述"
+horizontal_alignment = 1
