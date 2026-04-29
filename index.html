@@ -349,26 +349,88 @@ function initDeck(){
   return d;
 }
 
+// 功法卡池 - 45张，五行均衡分布
+// [白]普通 [绿]进阶 [蓝]稀有
 const POOL=[
+  // ===== 🔥 火系 (10张) =====
+  // 白
   ()=>mk('火蛇符','atk',1,{dmg:4,burn:2},{el:'fire',desc:'4伤害+2灼烧'}),
-  ()=>mk('土刺符','atk',1,{dmg:8},{el:'earth',desc:'造成8伤害'}),
-  ()=>mk('木藤符','atk',1,{dmg:4,blk:4},{el:'wood',desc:'4伤害+4格挡'}),
-  ()=>mk('灵盾符','def',1,{blk:8},{el:'earth',desc:'获得8格挡'}),
-  ()=>mk('淬火术','skill',0,{nextAtk:4},{el:'fire',desc:'下张攻击+4伤害'}),
-  ()=>mk('灵气运转','skill',0,{draw:1},{el:'none',desc:'抽2张牌，弃1张牌'}),
+  ()=>mk('火羽箭','atk',1,{dmg:7},{el:'fire',desc:'造成7伤害'}),
+  ()=>mk('引火诀','skill',0,{nextAtk:3,burn:1},{el:'fire',desc:'下张攻击+3+1灼烧'}),
+  ()=>mk('烈焰护盾','def',1,{blk:5,burn:2},{el:'fire',desc:'5格挡+敌人2灼烧'}),
+  // 绿
   ()=>mk('三昧真火','atk',2,{dmg:14,burn:3},{el:'fire',desc:'14伤害+3灼烧'}),
   ()=>mk('丹火淬体','def',1,{blk:6,nextAtk:4},{el:'fire',desc:'6格挡+下次攻击+4'}),
-  ()=>mk('炼丹手记','skill',1,{draw:3},{el:'none',desc:'抽3张牌'}),
   ()=>mk('火鸦变','skill',1,{},{el:'fire',desc:'所有火鸦本局+3伤害'}),
-  ()=>mk('毒雾符','atk',1,{dmg:2,poison:3},{el:'wood',desc:'2伤害+3中毒'}),
-  ()=>mk('以毒攻毒','atk',1,{},{el:'wood',desc:'造成中毒层数伤害(上限15)'}),
+  ()=>mk('炎爆术','atk',2,{dmg:10,burn:2},{el:'fire',desc:'10伤害+2灼烧'}),
+  // 蓝
   ()=>mk('炼狱火海','atk',3,{dmg:12,burn:4},{el:'fire',desc:'AOE 12伤害+4灼烧'}),
   ()=>mk('丹意凝形','skill',1,{},{el:'fire',desc:'被动:每打出火牌+1攻击/层'}),
+
+  // ===== 🌿 木系 (9张) =====
+  // 白
+  ()=>mk('木藤符','atk',1,{dmg:4,blk:4},{el:'wood',desc:'4伤害+4格挡'}),
+  ()=>mk('毒雾符','atk',1,{dmg:2,poison:3},{el:'wood',desc:'2伤害+3中毒'}),
+  ()=>mk('回春术','skill',0,{heal:5},{el:'wood',desc:'回复5生命'}),
+  ()=>mk('灵木护盾','def',1,{blk:7},{el:'wood',desc:'获得7格挡'}),
+  // 绿
+  ()=>mk('以毒攻毒','atk',1,{},{el:'wood',desc:'造成中毒层数伤害(上限15)'}),
+  ()=>mk('枯木逢春','atk',1,{dmg:5,heal:3},{el:'wood',desc:'5伤害+回复3HP'}),
+  ()=>mk('万毒阵','skill',1,{poison:4},{el:'wood',desc:'施加4中毒'}),
   ()=>mk('噬魂毒','atk',2,{poison:5},{el:'wood',desc:'5中毒+每层额外+1'}),
-  ()=>mk('百草护元','def',2,{blk:15},{el:'wood',desc:'15格挡+每回合3格挡'}),
-  ()=>mk('金光咒','atk',1,{dmg:9},{el:'metal',desc:'造成9伤害'}),
-  ()=>mk('寒冰符','def',1,{blk:6},{el:'water',desc:'获得6格挡'}),
+  // 蓝
+  ()=>mk('百草护元','def',2,{blk:15},{el:'wood',desc:'15格挡+每回合+3格挡'}),
+
+  // ===== ⛰️ 土系 (8张) =====
+  // 白
+  ()=>mk('土刺符','atk',1,{dmg:8},{el:'earth',desc:'造成8伤害'}),
+  ()=>mk('灵盾符','def',1,{blk:8},{el:'earth',desc:'获得8格挡'}),
+  ()=>mk('落石术','atk',1,{dmg:6,blk:3},{el:'earth',desc:'6伤害+3格挡'}),
+  ()=>mk('厚土壁','def',1,{blk:5},{el:'earth',desc:'获得5格挡(下回合+2)'}),
+  // 绿
+  ()=>mk('山崩诀','atk',2,{dmg:12,blk:5},{el:'earth',desc:'12伤害+5格挡'}),
+  ()=>mk('岩甲术','def',1,{blk:10},{el:'earth',desc:'获得10格挡'}),
+  // 蓝
+  ()=>mk('大地守护','def',2,{blk:18},{el:'earth',desc:'获得18格挡'}),
+  ()=>mk('地裂符','atk',2,{dmg:16},{el:'earth',desc:'造成16伤害'}),
+
+  // ===== 💧 水系 (9张) =====
+  // 白
   ()=>mk('水波术','atk',1,{dmg:5,draw:1},{el:'water',desc:'5伤害+抽1张'}),
+  ()=>mk('寒冰符','def',1,{blk:6},{el:'water',desc:'获得6格挡'}),
+  ()=>mk('潮汐诀','atk',1,{dmg:4,blk:3},{el:'water',desc:'4伤害+3格挡'}),
+  ()=>mk('凝冰箭','atk',1,{dmg:6},{el:'water',desc:'造成6伤害(敌人下回合-2攻击)'}),
+  // 绿
+  ()=>mk('冰封术','def',1,{blk:9},{el:'water',desc:'获得9格挡'}),
+  ()=>mk('水镜盾','def',2,{blk:12,draw:1},{el:'water',desc:'12格挡+抽1张'}),
+  ()=>mk('水灵护体','def',1,{blk:4,heal:3},{el:'water',desc:'4格挡+回复3HP'}),
+  ()=>mk('霜冻术','atk',2,{dmg:8,burn:2},{el:'water',desc:'8伤害+2灼烧(冰火交融)'}),
+  // 蓝
+  ()=>mk('玄冰诀','atk',2,{dmg:11,draw:2},{el:'water',desc:'11伤害+抽2张'}),
+
+  // ===== ⚔️ 金系 (9张) =====
+  // 白
+  ()=>mk('金光咒','atk',1,{dmg:9},{el:'metal',desc:'造成9伤害'}),
+  ()=>mk('金刃符','atk',1,{dmg:7},{el:'metal',desc:'造成7伤害'}),
+  ()=>mk('锋刃术','atk',0,{dmg:4},{el:'metal',desc:'造成4伤害(免费)'}),
+  ()=>mk('金丝护甲','def',1,{blk:6},{el:'metal',desc:'获得6格挡'}),
+  // 绿
+  ()=>mk('锐金诀','atk',1,{dmg:11},{el:'metal',desc:'造成11伤害'}),
+  ()=>mk('穿甲符','atk',2,{dmg:14},{el:'metal',desc:'14伤害(无视格挡)'}),
+  ()=>mk('金刚罩','def',1,{blk:8},{el:'metal',desc:'获得8格挡'}),
+  ()=>mk('剑气诀','atk',1,{dmg:6,draw:1},{el:'metal',desc:'6伤害+抽1张'}),
+  // 蓝
+  ()=>mk('万剑归宗','atk',3,{dmg:20},{el:'metal',desc:'造成20伤害'}),
+
+  // ===== 无属性 (5张) =====
+  // 白
+  ()=>mk('灵气运转','skill',0,{draw:1},{el:'none',desc:'抽2张牌，弃1张牌'}),
+  ()=>mk('调息术','skill',0,{heal:4},{el:'none',desc:'回复4生命'}),
+  // 绿
+  ()=>mk('炼丹手记','skill',1,{draw:3},{el:'none',desc:'抽3张牌'}),
+  ()=>mk('御气诀','skill',1,{blk:5,draw:1,heal:2},{el:'none',desc:'5格挡+抽1张+回复2'}),
+  // 蓝
+  ()=>mk('淬火术','skill',0,{nextAtk:6},{el:'none',desc:'下张攻击+6伤害'}),
 ];
 
 const DRUGS=[
@@ -1403,8 +1465,9 @@ function backToHub(){
 }
 
 function showCardSelect(isElite){
+  // 普通战斗: 白+绿, 精英: 绿+蓝, 分层提供
+  let pool=[...POOL].sort(()=>Math.random()-.5);
   let count=isElite?4:3;
-  let pool=[...POOL].sort(()=>Math.random()-.5).slice(0,count);
   let cs=$('card-choices');cs.innerHTML='';
   $('card-select-title').textContent=isElite?'💎 精英击败！选择卡牌（+可移除1张）':'✨ 选择一张卡牌';
   if(isElite){
