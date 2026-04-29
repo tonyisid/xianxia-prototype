@@ -181,6 +181,7 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
     <div class="hub-btn" onclick="showCultivate()"><div class="hb-icon">🧘</div><div class="hb-name">修炼</div><div class="hb-desc">打坐积攒修为</div></div>
     <div class="hub-btn" onclick="showAlchemy()"><div class="hb-icon">⚗️</div><div class="hb-name">炼丹</div><div class="hb-desc">炼制灵丹妙药</div></div>
     <div class="hub-btn" onclick="showRefine()"><div class="hb-icon">🔨</div><div class="hb-name">炼器</div><div class="hb-desc">炼制法器法宝</div></div>
+    <div class="hub-btn" onclick="showGongfa()"><div class="hb-icon">📖</div><div class="hb-name">功法</div><div class="hb-desc">管理卡牌收藏</div></div>
   </div>
   <button class="btn btn-sm" onclick="showInventory()" style="color:#8a8a9e;border-color:#5a5a6e">📦 背包</button>
 </div>
@@ -209,6 +210,14 @@ body{background:#1a1a2e;color:#e0d5c1;font-family:'SimSun','STSong',serif;overfl
   <div style="color:#6a6a7e;font-size:14px;margin-bottom:10px">当前矿石：<span id="refine-ores" style="color:#f39c12">0</span></div>
   <div class="recipe-grid" id="refine-recipes"></div>
   <div class="equipped-section" id="refine-equipped"></div>
+</div>
+
+<!-- 功法弹窗 -->
+<div id="gongfa-modal" class="modal hidden">
+  <button class="modal-close" onclick="closeModal('gongfa-modal')">✕</button>
+  <h2>📖 功法阁</h2>
+  <div id="gongfa-tabs" style="display:flex;gap:8px;margin-bottom:15px"></div>
+  <div id="gongfa-content" style="width:100%;max-width:500px"></div>
 </div>
 
 <!-- 背包弹窗 -->
@@ -390,10 +399,19 @@ function defaultChar(){
     equippedArtifacts:[],
     ownedPills:[],
     ownedArtifacts:[],
+    unlockedGongfa:['basic'],
+    gongfaCollection:[],
+    equippedGongfa:[],
   };
 }
 function loadChar(){
-  try{let s=localStorage.getItem('xianxia_save');if(s){char=JSON.parse(s);return}}catch(e){}
+  try{let s=localStorage.getItem('xianxia_save');if(s){char=JSON.parse(s);
+    // migration for old saves
+    if(!char.unlockedGongfa) char.unlockedGongfa=['basic'];
+    if(!char.gongfaCollection) char.gongfaCollection=[];
+    if(!char.equippedGongfa) char.equippedGongfa=[];
+    if(!char.yaodan) char.yaodan=0;
+    return}}catch(e){}
   char=defaultChar();
   saveChar();
 }
@@ -555,6 +573,166 @@ function unequipPill(i){
   saveChar();renderAlchemy();
 }
 
+// ===== 功法系统 =====
+const GONGFA_LIST=[
+  {id:'basic',name:'基础功法',desc:'火鸦×4, 灵草护体×3, 丹火引燃×2, 药炉感悟×1',cards:[],bonus:{},cost:null},
+  {id:'yanhuo',name:'炎火诀',desc:'火鸦×6, 丹火引燃×3, 多1张三昧真火',cards:['yanhuo_bonus'],bonus:{atkDmg:1},cost:{lingcao:4,yaodan:2}},
+  {id:'muLing',name:'木灵经',desc:'灵草护体×5, 毒雾符×2, 多1张以毒攻毒',cards:['muling_bonus'],bonus:{hpBonus:5,blkBonus:2},cost:{lingcao:5,yaodan:1}},
+  {id:'tuDun',name:'土遁术',desc:'灵盾符×4, 多2格挡/回合, 多1张百草护元',cards:['tudun_bonus'],bonus:{blkBonus:3,hpBonus:3},cost:{kuangshi:4,yaodan:1}},
+  {id:'jinRui',name:'金锐诀',desc:'金刃符×3, 金光咒×2, 暴击+5%',cards:['jinrui_bonus'],bonus:{atkDmg:2,crit:5},cost:{kuangshi:5,yaodan:2}},
+  {id:'shuiYun',name:'水云功',desc:'寒冰符×3, 水波术×2, 灵力+1, 多抽1张',cards:['shuiyun_bonus'],bonus:{spBonus:1},cost:{lingcao:3,kuangshi:3,yaodan:1}},
+];
+const GONGFA_BONUS_CARDS={
+  yanhuo_bonus:{name:'三昧真火',type:'atk',cost:2,fx:{dmg:14,burn:3},el:'fire',desc:'14伤害+3灼烧'},
+  muling_bonus:{name:'以毒攻毒',type:'atk',cost:1,fx:{},el:'wood',desc:'造成中毒层数伤害(上限15)'},
+  tudun_bonus:{name:'百草护元',type:'def',cost:2,fx:{blk:15},el:'wood',desc:'15格挡+每回合3格挡'},
+  jinrui_bonus:{name:'金光咒',type:'atk',cost:1,fx:{dmg:9},el:'metal',desc:'造成9伤害'},
+  shuiyun_bonus:{name:'水波术',type:'atk',cost:1,fx:{dmg:5,draw:1},el:'water',desc:'5伤害+抽1张'},
+};
+
+let gongfaTab='deck';
+function showGongfa(){
+  gongfaTab='deck';
+  renderGongfa();
+  showModal('gongfa-modal');
+}
+function renderGongfa(){
+  // tabs
+  let tabs=[{id:'deck',name:'🗡️ 当前牌组'},{id:'learn',name:'📚 学习功法'},{id:'equip',name:'⚡ 装备功法'}];
+  $('gongfa-tabs').innerHTML=tabs.map(t=>`<button class="btn btn-sm" style="${gongfaTab===t.id?'background:#5a3d2b;border-color:#d4a574':'color:#6a6a7e;border-color:#3a3a4e;background:transparent'}" onclick="gongfaTab='${t.id}';renderGongfa()">${t.name}</button>`).join('');
+  
+  if(gongfaTab==='deck') renderGongfaDeck();
+  else if(gongfaTab==='learn') renderGongfaLearn();
+  else if(gongfaTab==='equip') renderGongfaEquip();
+}
+
+function renderGongfaDeck(){
+  // show current starting deck cards
+  let deck=initDeck();
+  // count cards by name
+  let counts={};
+  deck.forEach(c=>{counts[c.name]=(counts[c.name]||0)+1});
+  let html='<h3 style="color:#d4a574;margin-bottom:10px">初始牌组</h3><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">';
+  Object.entries(counts).forEach(([name,cnt])=>{
+    let card=deck.find(c=>c.name===name);
+    let el=EL_N[card.el]||'?';
+    html+=`<div style="background:#2a2a3e;border:1px solid #4a4a5e;border-radius:6px;padding:8px 14px;font-size:13px"><span style="color:#d4a574">${name}</span> <span style="color:#6a6a7e">×${cnt}</span> <span style="font-size:11px;color:#4a4a5e">${el}</span></div>`;
+  });
+  html+='</div>';
+  // show equipped gongfa cards
+  if(char.equippedGongfa.length>0){
+    html+='<h3 style="color:#d4a574;margin:15px 0 10px">功法加成卡牌</h3><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">';
+    char.equippedGongfa.forEach(g=>{
+      if(g.cards) g.cards.forEach(cid=>{
+        let c=GONGFA_BONUS_CARDS[cid];
+        if(c) html+=`<div style="background:#2a2a3e;border:2px solid #e67e22;border-radius:6px;padding:8px 14px;font-size:13px"><span style="color:#e67e22">${c.name}</span> <span style="font-size:11px;color:#6a6a7e">${c.desc}</span></div>`;
+      });
+    });
+    html+='</div>';
+  }
+  // show gongfa passive bonuses
+  let allBonuses={};
+  char.equippedGongfa.forEach(g=>{Object.entries(g.bonus||{}).forEach(([k,v])=>{allBonuses[k]=(allBonuses[k]||0)+v})});
+  if(Object.keys(allBonuses).length>0){
+    html+='<h3 style="color:#d4a574;margin:15px 0 10px">被动加成</h3><div style="font-size:13px;color:#8a8a9e">';
+    if(allBonuses.atkDmg) html+=`⚔️ 攻击+${allBonuses.atkDmg} `;
+    if(allBonuses.hpBonus) html+=`❤️ HP+${allBonuses.hpBonus} `;
+    if(allBonuses.blkBonus) html+=`🛡️ 格挡+${allBonuses.blkBonus} `;
+    if(allBonuses.spBonus) html+=`🔮 灵力+${allBonuses.spBonus} `;
+    if(allBonuses.crit) html+=`💥 暴击+${allBonuses.crit}% `;
+    html+='</div>';
+  }
+  // collected cards from runs
+  if(char.gongfaCollection.length>0){
+    html+='<h3 style="color:#d4a574;margin:15px 0 10px">历练收藏（'+char.gongfaCollection.length+'张）</h3><div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">';
+    let seen={};
+    char.gongfaCollection.forEach(c=>{
+      if(seen[c.name]) return; seen[c.name]=true;
+      html+=`<div style="background:#2a2a3e;border:1px solid #3a3a4e;border-radius:6px;padding:6px 12px;font-size:12px;color:#d4a574">${c.name}</div>`;
+    });
+    html+='</div>';
+  }
+  $('gongfa-content').innerHTML=html;
+}
+
+function renderGongfaLearn(){
+  let html='<div style="font-size:13px;color:#6a6a7e;margin-bottom:15px">消耗材料学习新功法，获得独特加成和专属卡牌</div>';
+  GONGFA_LIST.forEach(g=>{
+    if(g.id==='basic')return; // skip basic
+    let owned=char.unlockedGongfa.includes(g.id);
+    let c=g.cost||{};
+    let can=!owned&&(c.lingcao||0)<=char.lingcao&&(c.kuangshi||0)<=char.kuangshi&&(c.yaodan||0)<=char.yaodan;
+    let costParts=[];
+    if(c.lingcao) costParts.push(`🌿×${c.lingcao}`);
+    if(c.kuangshi) costParts.push(`⛏️×${c.kuangshi}`);
+    if(c.yaodan) costParts.push(`🔮×${c.yaodan}`);
+    let bonusHtml='';
+    let b=g.bonus;
+    if(b){
+      if(b.atkDmg) bonusHtml+=`⚔️+${b.atkDmg} `;
+      if(b.hpBonus) bonusHtml+=`❤️+${b.hpBonus} `;
+      if(b.blkBonus) bonusHtml+=`🛡️+${b.blkBonus} `;
+      if(b.spBonus) bonusHtml+=`🔮+${b.spBonus} `;
+      if(b.crit) bonusHtml+=`💥+${b.crit}% `;
+    }
+    html+=`<div style="background:#2a2a3e;border:2px solid ${owned?'#27ae60':'#4a4a5e'};border-radius:10px;padding:15px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><span style="color:#d4a574;font-size:16px">${g.name}</span> ${owned?'<span style="color:#27ae60;font-size:12px">✅ 已学习</span>':''}</div>
+        <div style="font-size:12px;color:#6a6a7e">${costParts.join(' ')}</div>
+      </div>
+      <div style="color:#8a8a9e;font-size:12px;margin:6px 0">${g.desc}</div>
+      <div style="font-size:12px;color:#e67e22">被动：${bonusHtml||'无'}</div>
+      ${!owned?`<button class="btn btn-sm" style="margin-top:8px;${can?'':'opacity:.4;cursor:not-allowed'}" onclick="${can?`learnGongfa('${g.id}')`:''}">${can?'学习':'材料不足'}</button>`:''}
+    </div>`;
+  });
+  $('gongfa-content').innerHTML=html;
+}
+
+function learnGongfa(id){
+  let g=GONGFA_LIST.find(x=>x.id===id);
+  if(!g||char.unlockedGongfa.includes(id))return;
+  let c=g.cost||{};
+  if((c.lingcao||0)>char.lingcao||(c.kuangshi||0)>char.kuangshi||(c.yaodan||0)>char.yaodan)return;
+  if(c.lingcao) char.lingcao-=c.lingcao;
+  if(c.kuangshi) char.kuangshi-=c.kuangshi;
+  if(c.yaodan) char.yaodan-=c.yaodan;
+  char.unlockedGongfa.push(id);
+  saveChar();renderGongfa();renderHub();
+}
+
+function renderGongfaEquip(){
+  let html='<div style="font-size:13px;color:#6a6a7e;margin-bottom:10px">装备功法影响初始牌组和战斗属性（最多2个）</div>';
+  html+='<h3 style="color:#d4a574;margin-bottom:8px">已装备 ('+char.equippedGongfa.length+'/2)</h3><div>';
+  char.equippedGongfa.forEach((g,i)=>{
+    html+=`<div style="background:#2a2a3e;border:2px solid #27ae60;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+      <div><span style="color:#d4a574">${g.name}</span></div>
+      <button class="btn btn-sm" style="color:#e74c3c;border-color:#e74c3c;padding:4px 12px;font-size:12px" onclick="unequipGongfa(${i})">卸下</button></div>`;
+  });
+  if(!char.equippedGongfa.length) html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
+  html+='</div><h3 style="color:#d4a574;margin:12px 0 8px">可装备</h3><div>';
+  let equipped=char.equippedGongfa.map(g=>g.id);
+  char.unlockedGongfa.forEach(id=>{
+    if(equipped.includes(id))return;
+    let g=GONGFA_LIST.find(x=>x.id===id);
+    html+=`<div style="background:#2a2a3e;border:1px solid #4a4a5e;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+      <div><span style="color:#d4a574">${g.name}</span><div style="color:#6a6a7e;font-size:11px">${g.desc}</div></div>
+      <button class="btn btn-sm" style="padding:4px 12px;font-size:12px" onclick="equipGongfa('${id}')">装备</button></div>`;
+  });
+  html+='</div>';
+  $('gongfa-content').innerHTML=html;
+}
+function equipGongfa(id){
+  if(char.equippedGongfa.length>=2)return;
+  let g=GONGFA_LIST.find(x=>x.id===id);
+  if(!g||char.equippedGongfa.some(e=>e.id===id))return;
+  char.equippedGongfa.push({id:g.id,name:g.name,bonus:g.bonus,cards:g.cards});
+  saveChar();renderGongfa();
+}
+function unequipGongfa(i){
+  char.equippedGongfa.splice(i,1);
+  saveChar();renderGongfa();
+}
+
 // ===== 炼器系统 =====
 function showRefine(){
   renderRefine();
@@ -634,6 +812,9 @@ function showInventory(){
   html+='</div><h3>法器效果</h3><div style="margin-bottom:15px">';
   char.equippedArtifacts.forEach(a=>{html+=`<div style="color:#d4a574;font-size:14px;margin:4px 0">🔮 ${a._name}</div>`});
   if(!char.equippedArtifacts.length) html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
+  html+='</div><h3>功法</h3><div style="margin-bottom:15px">';
+  if(char.equippedGongfa.length) char.equippedGongfa.forEach(g=>{html+=`<div style="color:#e67e22;font-size:14px;margin:4px 0">📖 ${g.name}</div>`});
+  else html+='<div style="color:#6a6a7e;font-size:13px">未装备</div>';
   html+='</div><h3>灵根加成</h3><div style="color:#8a8a9e;font-size:13px">';
   let lg=char.linggen;
   if(lg==='fire') html+='🔥 攻击牌+1伤害，多1张火鸦';
@@ -664,17 +845,27 @@ window.adjDrug=function(i,d){let d2=DRUGS[i],total=Object.values(G.drugs).reduce
 
 function enterDungeon(){
   G.deck=initDeck();G.nodeIdx=0;G.fireCrowBonus=0;G.danYiStacks=0;G.baicaoPerTurn=0;G.killedElite=0;
-  G.runLingcao=0;G.runKuangshi=0;
+  G.runLingcao=0;G.runKuangshi=0;G.runYaodan=0;
+  // 功法加成
+  let gfaHp=0,gfaSp=0;
+  char.equippedGongfa.forEach(g=>{gfaHp+=(g.bonus?.hpBonus||0);gfaSp+=(g.bonus?.spBonus||0)});
   // 应用境界加成
   let realmBonus=char.realm;
-  G.maxHp=40+realmBonus*5;
-  G.maxSp=3+(realmBonus>=3?1:0)+(realmBonus>=6?1:0);
+  G.maxHp=40+realmBonus*5+gfaHp;
+  G.maxSp=3+(realmBonus>=3?1:0)+(realmBonus>=6?1:0)+gfaSp;
   // 应用丹药加成
   char.equippedPills.forEach(p=>{
     if(p.maxHp) G.maxHp+=p.maxHp;
     if(p.sp) G.maxSp+=p.sp;
   });
   G.hp=G.maxHp;G.sp=G.maxSp;G.blk=0;
+  // 功法卡牌加入牌组
+  char.equippedGongfa.forEach(g=>{
+    if(g.cards) g.cards.forEach(cid=>{
+      let tmpl=GONGFA_BONUS_CARDS[cid];
+      if(tmpl) G.deck.push(mk(tmpl.name,tmpl.type,tmpl.cost,tmpl.fx,{el:tmpl.el,desc:tmpl.desc}));
+    });
+  });
   // 初始格挡加成
   char.equippedPills.forEach(p=>{if(p.block) G.blk+=p.block});
   // 土灵根加成
@@ -869,6 +1060,7 @@ function _playCard(idx,target){
       totalDmg=c.dmg+(c.name==='火鸦'?G.fireCrowBonus:0)+G.nextAtk+G.danYiStacks;
       // 火灵根加成
       if(char.linggen==='fire'&&c.type==='atk') totalDmg+=1;
+      let gAtk=0;char.equippedGongfa.forEach(g=>{gAtk+=(g.bonus?.atkDmg||0)});totalDmg+=gAtk;
       // 玄铁剑加成
       char.equippedArtifacts.forEach(a=>{if(a.atkDmg&&c.type==='atk') totalDmg+=a.atkDmg});
       // 烈焰丹加成
@@ -1039,7 +1231,7 @@ function showCardSelect(isElite){
     let c=fn();
     let el=document.createElement('div');el.className=`card-choice ${EL_C[c.el]||'card-none'}`;
     el.innerHTML=`<div class="cost">${c.cost}</div><div style="margin-top:18px;font-size:15px;color:#d4a574;text-align:center">${c.name}</div><div style="font-size:12px;color:#8a8a9e;text-align:center;padding:10px 4px;line-height:1.5;flex:1">${c.desc}</div><div style="font-size:10px;text-align:center;color:#5a5a6e;border-top:1px solid #3a3a4e;padding-top:4px">${EL_N[c.el]||'?'}属性</div>`;
-    el.onclick=()=>{G.deck.push(c);log(`获得：${c.name}`,'log-info');afterSelect()};
+    el.onclick=()=>{G.deck.push(c);char.gongfaCollection.push({name:c.name,el:c.el});log(`获得：${c.name}`,'log-info');afterSelect()};
     cs.appendChild(el);
   });
   show('card-select-screen');
