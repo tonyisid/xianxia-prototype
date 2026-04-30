@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__zai-mcp-server__analyze_image",
+      "Bash(git -C \"D:\\\\Code\\\\xianxia-prototype\" show HEAD:client/scenes/battle/battle.tscn)",
+      "Bash(git -C \"D:\\\\Code\\\\xianxia-prototype\" diff HEAD -- client/scenes/battle/battle.tscn)"
+    ]
+  }
+}

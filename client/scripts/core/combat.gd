@@ -23,7 +23,7 @@ enum BattleState {IDLE, PLAYER_TURN, ENEMY_TURN, FIGHT_END}
 var state: BattleState = BattleState.IDLE
 
 var G: GameState
-var cards_db: CardsDB
+var _enemies_by_id: Dictionary = {}
 
 # 敌人状态
 var enemy_hp: int = 0
@@ -44,12 +44,30 @@ var player_block: int = 0
 
 func _ready() -> void:
 	G = get_node("/root/GameState") as GameState
-	cards_db = get_node("/root/CardsDB") as CardsDB
+	_load_enemies()
+
+
+func _load_enemies() -> void:
+	var f := FileAccess.open("res://scripts/data/enemies.json", FileAccess.READ)
+	if f == null:
+		push_error("Cannot load enemies.json")
+		return
+	var json_str: String = f.get_as_text()
+	f.close()
+	var data: Variant = JSON.parse_string(json_str)
+	if data == null:
+		push_error("Failed to parse enemies.json")
+		return
+	for enemy: Dictionary in data.get("enemies", []):
+		_enemies_by_id[enemy["id"]] = enemy
 
 
 func start_fight(enemy_id: String, layer_idx: int) -> void:
 	state = BattleState.IDLE
-	var enemy_data: Dictionary = cards_db.get_card(enemy_id)
+	var enemy_data: Dictionary = _enemies_by_id.get(enemy_id, {})
+	if enemy_data.is_empty():
+		push_error("Enemy not found: %s" % enemy_id)
+		return
 	current_enemy_data = enemy_data
 
 	var scale: float = 1.0 + layer_idx * 0.04
@@ -342,10 +360,26 @@ func _apply_dmg_to_enemy(dmg: int, apply_block: bool) -> void:
 
 
 func _enemy_choose_intent() -> void:
-	var is_enrage: bool = current_enemy_data.get("is_boss", false) and \
-		enemy_hp <= enemy_max_hp * current_enemy_data.get("enrage_below", 0.3)
-	var pool: Array = current_enemy_data.get("intents_normal" if not is_enrage else "intents_enrage", [])
+	var is_boss: bool = current_enemy_data.get("is_boss", false)
+	var is_enrage: bool = false
 
+	if is_boss:
+		var enrage_below: float = current_enemy_data.get("enrage_below", 0.3)
+		is_enrage = enemy_hp <= enemy_max_hp * enrage_below
+
+	var pool: Array
+	if is_boss and is_enrage:
+		pool = current_enemy_data.get("intents_enrage", [])
+	elif is_boss:
+		pool = current_enemy_data.get("intents_normal", [])
+	else:
+		pool = current_enemy_data.get("intents", [])
+
+	if pool.is_empty():
+		enemy_intent = {}
+		return
+
+	# 加权随机
 	var total_w: float = 0.0
 	for intent: Dictionary in pool:
 		total_w += float(intent.get("weight", 1))
@@ -357,28 +391,33 @@ func _enemy_choose_intent() -> void:
 		if roll <= cumulative:
 			enemy_intent = intent
 			return
-	if pool.size() > 0:
-		enemy_intent = pool[0]
+	enemy_intent = pool[0]
 
 
 func _enemy_act() -> void:
 	var intent_type: String = enemy_intent.get("type", "atk")
+	var val: int = int(enemy_intent.get("value", 0))
 	match intent_type:
 		"atk":
-			_apply_dmg_to_player(enemy_intent.get("value", 0))
+			_apply_dmg_to_player(val)
 		"atk_blk":
 			enemy_block += int(enemy_intent.get("blk", 0))
-			_apply_dmg_to_player(enemy_intent.get("value", 0))
+			_apply_dmg_to_player(val)
 		"atk_lifesteal":
-			var lifesteal_dmg: int = enemy_intent.get("value", 0)
-			_apply_dmg_to_player(lifesteal_dmg)
-			player_hp = maxi(0, player_hp - lifesteal_dmg)
+			_apply_dmg_to_player(val)
+			enemy_hp = mini(enemy_hp + val, enemy_max_hp)
 		"def":
 			enemy_block += int(enemy_intent.get("blk", 0))
+		"def_atk":
+			enemy_block += int(enemy_intent.get("blk", 0))
+			_apply_dmg_to_player(int(enemy_intent.get("atk", 0)))
 		"charge":
 			pass
 		"multi_atk":
-			_apply_dmg_to_player(enemy_intent.get("value", 0))
+			_apply_dmg_to_player(val)
+		"poison":
+			var poison_val: int = val
+			_apply_dmg_to_player(poison_val)
 		"special":
 			pass
 	_enemy_choose_intent()

@@ -13,6 +13,10 @@ const LINGGEN_LIST: Array = [
 ]
 
 var chosen_linggen: String = ""
+var result_label: Label
+var desc_label: Label
+var awaken_btn: Button
+var confirm_btn: Button
 
 
 func _ready() -> void:
@@ -49,30 +53,26 @@ func _build_ui() -> void:
 	vbox.add_child(sub)
 
 	# 灵根显示
-	var result_label := Label.new()
-	result_label.name = "ResultLabel"
+	result_label = Label.new()
 	result_label.text = "正在感应..."
 	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	result_label.add_theme_font_size_override("font_size", 22)
 	vbox.add_child(result_label)
 
-	var desc_label := Label.new()
-	desc_label.name = "DescLabel"
+	desc_label = Label.new()
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
 	vbox.add_child(desc_label)
 
 	# 觉醒按钮
-	var awaken_btn := Button.new()
-	awaken_btn.name = "AwakenBtn"
+	awaken_btn = Button.new()
 	awaken_btn.text = "✨ 觉醒灵根"
 	awaken_btn.custom_minimum_size = Vector2(200, 40)
 	vbox.add_child(awaken_btn)
 	awaken_btn.pressed.connect(_on_awaken)
 
 	# 确认按钮（初始隐藏）
-	var confirm_btn := Button.new()
-	confirm_btn.name = "ConfirmBtn"
+	confirm_btn = Button.new()
 	confirm_btn.text = "开始修仙之路"
 	confirm_btn.visible = false
 	confirm_btn.custom_minimum_size = Vector2(200, 40)
@@ -86,16 +86,11 @@ func _on_awaken() -> void:
 	var lg: Dictionary = LINGGEN_LIST[idx]
 	chosen_linggen = lg["id"]
 
-	var result: Label = get_node("ResultLabel") as Label
-	var desc: Label = get_node("DescLabel") as Label
-	var awaken: Button = get_node("AwakenBtn") as Button
-	var confirm: Button = get_node("ConfirmBtn") as Button
-
-	result.text = lg["name"]
-	result.add_theme_color_override("font_color", lg["color"])
-	desc.text = lg["desc"]
-	awaken.visible = false
-	confirm.visible = true
+	result_label.text = lg["name"]
+	result_label.add_theme_color_override("font_color", lg["color"])
+	desc_label.text = lg["desc"]
+	awaken_btn.visible = false
+	confirm_btn.visible = true
 
 
 func _on_confirm() -> void:

@@ -126,7 +126,9 @@ func load_game() -> void:
 	if data == null:
 		return
 	if data.has("version") and data["version"] >= 1:
-		var m: Dictionary = data.get("meta", {})
+		var m = data.get("meta", {})
+		if not m is Dictionary:
+			m = {}
 		linggen = m.get("linggen", "")
 		realm = m.get("realm", 1)
 		xiuwei = m.get("xiuwei", 0)
@@ -156,7 +158,9 @@ func load_game() -> void:
 		var offline_xiuwei: int = (offline_secs / 60) * 5
 		xiuwei += offline_xiuwei
 
-		var r: Dictionary = data.get("run", {})
+		var r = data.get("run", {})
+		if not r is Dictionary:
+			r = {}
 		if r.get("active", false):
 			in_run = true
 			run_seed = r.get("seed", 0)
